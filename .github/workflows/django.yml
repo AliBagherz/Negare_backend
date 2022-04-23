@@ -30,4 +30,4 @@ jobs:
         python negare/manage.py test
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py') --disable=import-outside-toplevel
+        pylint $(git ls-files '*.py') --disable=import-outside-toplevel --max-line-length=200
