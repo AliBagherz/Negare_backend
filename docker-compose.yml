@@ -1,0 +1,29 @@
+version: "3.3"
+
+services:
+  db:
+    build: ./DockerFiles/postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345678
+      - POSTGRES_DB=postgres
+    ports:
+      - "15432:5432"
+  web:
+    build: ./DockerFiles/worker
+    tty: true
+    environment:
+      - DB_HOST=db
+      - DEBUG=True
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345678
+      - POSTGRES_DB=postgres
+    command: /bin/bash -c "cd negare && python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
