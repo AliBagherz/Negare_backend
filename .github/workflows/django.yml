@@ -27,7 +27,7 @@ jobs:
         pip install -r DockerFiles/worker/requirements.txt
     - name: Run Tests
       run: |
-        python manage.py test
+        python negare/manage.py test
     - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py') --disable=import-outside-toplevel
