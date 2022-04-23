@@ -94,6 +94,9 @@ DATABASES = {
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
         "HOST": os.getenv("DB_HOST", "localhost"),
         "PORT": 5432,
+        'TEST': {
+            'NAME': 'mytestdatabase'
+        }
     }
 }
 
