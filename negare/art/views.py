@@ -18,6 +18,14 @@ class ArtPieceView(APIView):
     )
     def get(self, request, pk):
         art_piece = get_object_or_404(ArtPiece.objects.all(), id=pk)
-        serializer = ArtPieceSerializer(art_piece, many=False, context={"user": request.user})
+        serializer = ArtPieceSerializer(
+            art_piece,
+            many=False,
+            context=
+            {
+                "user": request.user,
+                "request": request
+            }
+        )
         return Response(serializer.data)
 

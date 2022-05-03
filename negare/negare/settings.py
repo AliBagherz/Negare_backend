@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_minio_backend',
     'versatileimagefield',
     'drf_yasg',
     'core',
@@ -142,7 +143,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+MINIO_ENDPOINT = '192.168.1.3:9000'
+MINIO_ACCESS_KEY = 'negare-user'
+MINIO_SECRET_KEY = '12345678'
+MINIO_STORAGE_USE_HTTPS = False
+MINIO_STORAGE_MEDIA_BUCKET_NAME = 'local-media'
+MINIO_PRIVATE_BUCKETS = [
+    'art-pieces',
+]
+MINIO_USE_HTTPS = False
 
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {

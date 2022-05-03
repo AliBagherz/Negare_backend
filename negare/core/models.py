@@ -1,4 +1,5 @@
 from django.db import models
+from django_minio_backend import MinioBackend, iso_date_prefix
 from versatileimagefield.fields import VersatileImageField, PPOIField
 
 
