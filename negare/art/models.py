@@ -24,3 +24,4 @@ class ArtPiece(BaseModel):
     cover = models.ForeignKey(Image, on_delete=models.CASCADE, blank=True, related_name='art_pieces')
     url = models.URLField(null=True, blank=False)
     owner = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='art_pieces')
+    liked_users = models.ManyToManyField(AppUser, related_name='liked_art_pieces')
