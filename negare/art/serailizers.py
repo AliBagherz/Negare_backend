@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from authentication.serializers import UserSerializer
-from .models import ArtPiece
+from .models import ArtPiece, ArtTypeChoice
 from core.serializers import ImageSerializer
 
 
@@ -27,6 +27,8 @@ class ArtPieceSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_url(art_piece):
+        if not art_piece.file:
+            return ""
         return art_piece.file.url
 
     class Meta:
@@ -43,3 +45,19 @@ class ArtPieceSerializer(serializers.ModelSerializer):
             "is_user_liked",
             "url"
         ]
+
+
+class ArtPieceContentSerializer(serializers.Serializer):
+    file = serializers.FileField()
+
+
+class ArtPieceCoverSerializer(serializers.Serializer):
+    cover = serializers.IntegerField()
+    type = serializers.ChoiceField(ArtTypeChoice, default=ArtTypeChoice.PICTURE)
+
+
+class ArtPieceDetailSerializer(serializers.Serializer):
+    price = serializers.IntegerField(allow_null=True)
+    title = serializers.CharField(max_length=200, allow_null=True)
+    description = serializers.CharField(max_length=1000, allow_null=True)
+

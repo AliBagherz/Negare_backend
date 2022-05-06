@@ -1,0 +1,1 @@
+./minio server ./data --address 'localhost:9006' --console-address "localhost:9005"
