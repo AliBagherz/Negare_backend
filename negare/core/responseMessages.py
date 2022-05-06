@@ -6,6 +6,7 @@ class ErrorResponse:
 
 
 class SuccessResponse:
+    SUCCESS = "successes!"
     CREATED = "created!"
     DELETED = "deleted!"
     CHANGED = "changed!"

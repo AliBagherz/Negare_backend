@@ -14,7 +14,7 @@ class ArtTypeChoice(models.TextChoices):
 
 
 class ArtPiece(BaseModel):
-    title = models.CharField(max_length=150, blank=False, null=False)
+    title = models.CharField(max_length=150, blank=True, null=False, default="")
     price = models.IntegerField(null=False, default=0)
     description = models.TextField(null=False, blank=True, default="")
     type = models.CharField(
@@ -30,3 +30,4 @@ class ArtPiece(BaseModel):
     )
     owner = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='art_pieces')
     liked_users = models.ManyToManyField(AppUser, related_name='liked_art_pieces')
+    is_active = models.BooleanField(default=False)
