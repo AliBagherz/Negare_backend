@@ -27,3 +27,9 @@ services:
       - "8000:8000"
     depends_on:
       - db
+  minio:
+    build: ./DockerFiles/minio
+    command: minio server ./data --address '0.0.0.0:9006' --console-address "0.0.0.0:9005"
+    ports:
+      - "9005:9005"
+      - "9006:9006"

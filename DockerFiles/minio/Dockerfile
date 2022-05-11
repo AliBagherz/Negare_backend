@@ -1,0 +1,1 @@
+FROM m.docker-registry.ir/minio/minio:edge
