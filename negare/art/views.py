@@ -5,11 +5,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.commonResponses import successResponse, invalidDataResponse
+from core.commonSchemas import not_found_schema, success_schema, invalid_data_schema
 from .models import ArtPiece
 
 from art.serailizers import ArtPieceSerializer, ArtPieceCoverSerializer, ArtPieceContentSerializer, \
     ArtPieceDetailSerializer
-from core.responseMessages import ErrorResponse, SuccessResponse
+from .schemas import like_schema, art_piece_id_schema
 from .utils import likeArtPiece, create_new_art_piece, add_content_to_art_piece, add_detail_to_art_piece
 
 
@@ -17,7 +18,7 @@ class ArtPieceView(APIView):
     @swagger_auto_schema(
         responses={
             200: ArtPieceSerializer,
-            404: ErrorResponse.NOT_FOUND,
+            404: not_found_schema()
         },
     )
     def get(self, request, pk):
@@ -36,8 +37,8 @@ class ArtPieceView(APIView):
     @swagger_auto_schema(
         request_body=ArtPieceDetailSerializer,
         responses={
-            200: SuccessResponse.SUCCESS,
-            404: ErrorResponse.NOT_FOUND,
+            200: success_schema(),
+            404: not_found_schema(),
         },
     )
     def put(self, request, pk):
@@ -55,8 +56,8 @@ class ArtPieceView(APIView):
 class LikeArtPieceView(APIView):
     @swagger_auto_schema(
         responses={
-            200: "{'like': True}",
-            404: ErrorResponse.NOT_FOUND,
+            200: like_schema(),
+            404: not_found_schema(),
         },
     )
     def put(self, request, pk):
@@ -71,8 +72,8 @@ class ArtPieceCoverView(APIView):
     @swagger_auto_schema(
         request_body=ArtPieceCoverSerializer,
         responses={
-            200: "{'art_piece_id': 1}",
-            406: ErrorResponse.INVALID_DATA,
+            200: art_piece_id_schema(),
+            406: invalid_data_schema(),
         },
     )
     def post(self, request):
@@ -96,9 +97,9 @@ class ArtPieceContentView(APIView):
     @swagger_auto_schema(
         request_body=ArtPieceContentSerializer,
         responses={
-            200: SuccessResponse.SUCCESS,
-            406: ErrorResponse.INVALID_DATA,
-            404: ErrorResponse.NOT_FOUND
+            200: success_schema(),
+            406: invalid_data_schema(),
+            404: not_found_schema()
         },
     )
     def put(self, request, pk):
