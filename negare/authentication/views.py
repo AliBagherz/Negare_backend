@@ -4,7 +4,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.commonSchemas import invalid_data_schema
 from .models import AppUser
+from .schemas import create_user_schema
 from .serializers import RegisterSerializer
 from core.commonResponses import invalidDataResponse
 
@@ -18,8 +20,8 @@ class RegisterView(APIView):
     @swagger_auto_schema(
         request_body=RegisterSerializer,
         responses={
-            201: SuccessResponse.CREATED,
-            406: ErrorResponse.INVALID_DATA,
+            201: create_user_schema(),
+            406: invalid_data_schema(),
         },
     )
     def post(self, request):
