@@ -61,3 +61,30 @@ class ArtPieceDetailSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=200, allow_null=True)
     description = serializers.CharField(max_length=1000, allow_null=True)
 
+class GallerySerializer(serializers.ModelSerializer):
+    owner = UserSerializer()
+    posts_count = serializers.SerializerMethodField("get_posts_count")
+    posts = serializers.SerializerMethodField("get_posts")
+    likes_count = serializers.SerializerMethodField("get_likes_count")
+
+    @staticmethod
+    def get_posts_count(owner):
+        return owner.art_pieces.count()
+
+    @staticmethod
+    def get_posts(owner):
+        return owner.art_pieces
+
+    @staticmethod
+    def get_likes_count(art_piece):
+        return art_piece.liked_users.count()
+
+    class Meta:
+        model = ArtPiece
+        fields = [
+            'title',
+            'type',
+            'likes_count',
+            'posts_count'
+        ]
+        

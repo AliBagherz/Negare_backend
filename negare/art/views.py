@@ -10,6 +10,8 @@ from .models import ArtPiece
 from art.serailizers import ArtPieceSerializer, ArtPieceCoverSerializer, ArtPieceContentSerializer, \
     ArtPieceDetailSerializer
 from core.responseMessages import ErrorResponse, SuccessResponse
+
+from .serailizers import GallerySerializer
 from .utils import likeArtPiece, create_new_art_piece, add_content_to_art_piece, add_detail_to_art_piece
 
 
@@ -111,3 +113,15 @@ class ArtPieceContentView(APIView):
         add_content_to_art_piece(art_piece, serializer.validated_data['file'])
 
         return successResponse()
+
+class Gallery(APIView):
+    @swagger_auto_schema(
+        request_body=GallerySerializer,
+        responses={
+            200: SuccessResponse.SUCCESS,
+            406: ErrorResponse.INVALID_DATA,
+            404: ErrorResponse.NOT_FOUND
+        },
+    )
+    def get(self, request):
+        posts = get_object_or_404(ArtPiece.objects.all)
