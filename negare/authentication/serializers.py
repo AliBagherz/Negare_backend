@@ -20,3 +20,15 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppUser
         fields = ["id", "full_name"]
+
+
+class UserIdSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AppUser
+        fields = ['id']
+
+
+class AccessRefreshSerializer(serializers.Serializer):
+    access = serializers.CharField()
+    refresh = serializers.CharField()
+

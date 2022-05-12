@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 class AppUser(AbstractUser):
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["username"]
     username = models.CharField(
         _("username"),
         max_length=150,
