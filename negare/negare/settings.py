@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'drf_yasg',
     'core',
     'authentication',
-    'art'
+    'channels',
+    'art',
+    'chat'
 ]
 
 MIDDLEWARE = [
@@ -85,7 +87,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'negare.wsgi.application'
+ASGI_APPLICATION = 'negare.asgi.application'
 
 
 # Database
@@ -154,6 +156,7 @@ MINIO_STORAGE_USE_HTTPS = False
 MINIO_STORAGE_MEDIA_BUCKET_NAME = 'local-media'
 MINIO_PRIVATE_BUCKETS = [
     'art-pieces',
+    'message-contents'
 ]
 MINIO_USE_HTTPS = False
 
