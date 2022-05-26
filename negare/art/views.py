@@ -92,8 +92,6 @@ class ArtPieceCoverView(APIView):
 
 
 class ArtPieceContentView(APIView):
-    parser_classes = (MultiPartParser,)
-
     @swagger_auto_schema(
         request_body=ArtPieceContentSerializer,
         responses={
@@ -104,11 +102,11 @@ class ArtPieceContentView(APIView):
     )
     def put(self, request, pk):
         art_piece = get_object_or_404(ArtPiece.objects.all(), id=pk)
-        serializer = ArtPieceContentSerializer(data={'file': request.FILES['file']})
+        serializer = ArtPieceContentSerializer(data=request.data)
 
         if not serializer.is_valid():
             return invalidDataResponse()
 
-        add_content_to_art_piece(art_piece, serializer.validated_data['file'])
+        add_content_to_art_piece(art_piece, serializer.validated_data['content_id'])
 
         return successResponse()

@@ -42,3 +42,7 @@ class ImageAvatarSerializer(FlexFieldsModelSerializer):
 
 class PkSerializer(serializers.Serializer):
     pk = serializers.IntegerField()
+
+
+class ContentSerializer(serializers.Serializer):
+    file = serializers.FileField()

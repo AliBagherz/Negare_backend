@@ -1,6 +1,4 @@
 from django.db import models
-from django_minio_backend import MinioBackend, iso_date_prefix
-
 from authentication.models import AppUser
 from core.models import BaseModel
 from django.utils.translation import gettext_lazy as _
@@ -26,18 +24,15 @@ class Message(BaseModel):
         choices=MessageTypeChoices.choices,
         default=MessageTypeChoices.TEXT
     )
-    text = models.CharField(max_length=2000, null=True, blank=False)
+    text = models.CharField(max_length=2000, null=True, blank=True)
     image = models.ForeignKey(
         "core.Image",
         on_delete=models.CASCADE,
         related_name='message',
-        null=True
+        null=True,
+        blank=True
     )
-    content = models.FileField(
-        storage=MinioBackend(bucket_name='message-contents'),
-        upload_to=iso_date_prefix,
-        null=True
-    )
+    content = models.ForeignKey("core.Content", on_delete=models.CASCADE, related_name='message', null=True, blank=True)
 
     def __str__(self):
         if self.type == MessageTypeChoices.TEXT:
