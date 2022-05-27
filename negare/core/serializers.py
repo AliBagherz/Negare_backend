@@ -24,21 +24,9 @@ class ImageSerializer(FlexFieldsModelSerializer):
         fields = ["id", "image"]
 
 
-class ImageAvatarSerializer(FlexFieldsModelSerializer):
-    image = VersatileImageFieldSerializer(
-        sizes=[
-            ("thumbnail", "thumbnail__100x100"),
-        ],
-        allow_null=True,
-        allow_empty_file=True,
-        required=False,
-    )
-
-    class Meta:
-        ref_name = "image_serializer"
-        model = Image
-        fields = ["image"]
-
-
 class PkSerializer(serializers.Serializer):
     pk = serializers.IntegerField()
+
+
+class ContentSerializer(serializers.Serializer):
+    file = serializers.FileField()

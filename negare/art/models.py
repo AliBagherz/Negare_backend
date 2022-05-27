@@ -23,11 +23,7 @@ class ArtPiece(BaseModel):
         default=ArtTypeChoice.PICTURE
     )
     cover = models.ForeignKey(Image, on_delete=models.CASCADE, blank=True, related_name='art_pieces', null=True)
-    file = models.FileField(
-        storage=MinioBackend(bucket_name='art-pieces'),
-        upload_to=iso_date_prefix,
-        null=True
-    )
+    content = models.ForeignKey("core.Content", on_delete=models.CASCADE, related_name='art_piece', null=True)
     owner = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='art_pieces')
     liked_users = models.ManyToManyField(AppUser, related_name='liked_art_pieces')
     is_active = models.BooleanField(default=False)

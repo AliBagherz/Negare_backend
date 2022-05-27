@@ -27,9 +27,9 @@ class ArtPieceSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_url(art_piece):
-        if not art_piece.file:
+        if not art_piece.content:
             return ""
-        return art_piece.file.url
+        return art_piece.content.file.url
 
     class Meta:
         model = ArtPiece
@@ -48,7 +48,7 @@ class ArtPieceSerializer(serializers.ModelSerializer):
 
 
 class ArtPieceContentSerializer(serializers.Serializer):
-    file = serializers.FileField()
+    content_id = serializers.IntegerField()
 
 
 class ArtPieceCoverSerializer(serializers.Serializer):
@@ -60,4 +60,3 @@ class ArtPieceDetailSerializer(serializers.Serializer):
     price = serializers.IntegerField(allow_null=True)
     title = serializers.CharField(max_length=200, allow_null=True)
     description = serializers.CharField(max_length=1000, allow_null=True)
-

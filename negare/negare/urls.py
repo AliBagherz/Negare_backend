@@ -46,5 +46,6 @@ urlpatterns = [
     ),
     path("api/auth/", include("authentication.urls")),
     path("api/core/", include("core.urls")),
-    path("api/art/", include("art.urls"))
+    path("api/art/", include("art.urls")),
+    path("api/chat/", include("chat.urls"))
 ]

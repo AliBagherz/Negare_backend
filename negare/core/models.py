@@ -24,3 +24,11 @@ class Image(BaseModel):
         blank=True,
     )
     image_ppoi = PPOIField(null=True, blank=True)
+
+
+class Content(BaseModel):
+    file = models.FileField(
+        storage=MinioBackend(bucket_name='contents'),
+        upload_to=iso_date_prefix,
+        null=True
+    )
