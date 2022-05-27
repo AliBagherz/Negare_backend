@@ -27,6 +27,8 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - minio
+      - redis
   minio:
     build: ./DockerFiles/minio
     command: minio server ./data --address '0.0.0.0:9006' --console-address "0.0.0.0:9005"
@@ -35,3 +37,8 @@ services:
       - "9006:9006"
     volumes:
       - /mnt/data:/data
+  redis:
+    image: m.docker-registry.ir/redis:latest
+    command: redis-server
+    ports:
+      - "16379:6379"

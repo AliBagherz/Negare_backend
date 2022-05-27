@@ -147,8 +147,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MINIO_EXTERNAL_ENDPOINT = "0.0.0.0:9006"
-# MINIO_EXTERNAL_ENDPOINT = "188.121.110.151:9006"
+# MINIO_EXTERNAL_ENDPOINT = "0.0.0.0:9006"
+MINIO_EXTERNAL_ENDPOINT = "188.121.110.151:9006"
 MINIO_EXTERNAL_ENDPOINT_USE_HTTPS = False
 MINIO_ENDPOINT = 'minio:9006'
 MINIO_ACCESS_KEY = 'negare-user'
@@ -180,9 +180,9 @@ AUTH_USER_MODEL = 'authentication.AppUser'
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
-        # 'CONFIG': {
-        #     'hosts': [('127.0.0.1', 6739)]
-        # }
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
     }
 }

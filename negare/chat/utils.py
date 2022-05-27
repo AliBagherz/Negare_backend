@@ -25,6 +25,7 @@ def add_message_to_chat(data: dict, user: AppUser, chat_code: str) -> dict:
         users = get_users_from_code(chat_code)
         user1 = get_object_or_404(AppUser.objects.all(), pk=users[0])
         user2 = get_object_or_404(AppUser.objects.all(), pk=users[1])
+        chat.save()
         chat.users.add(user1)
         chat.users.add(user2)
         chat.save()
