@@ -84,12 +84,10 @@ class GetChatMessagesSerializer(serializers.Serializer):
 
 class NewMessageSerializer(serializers.Serializer):
     class TypeChoices(models.TextChoices):
-        P = "picture"
-        V = "video"
-        M = "music"
-        T = 'text'
+        P = "P"
+        V = "V"
+        M = "M"
+        T = 'T'
 
-    chat_code = serializers.CharField(max_length=200)
     type = serializers.ChoiceField(TypeChoices, default=TypeChoices.T)
-    sender_id = serializers.IntegerField()
     message = serializers.CharField()

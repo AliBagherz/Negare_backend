@@ -177,3 +177,12 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = 'authentication.AppUser'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        # 'CONFIG': {
+        #     'hosts': [('127.0.0.1', 6739)]
+        # }
+    }
+}

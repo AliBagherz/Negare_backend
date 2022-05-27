@@ -1,3 +1,4 @@
+from channels.db import database_sync_to_async
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 
@@ -5,24 +6,32 @@ from authentication.models import AppUser
 from chat.coder_service import get_users_from_code
 from chat.models import Chat, Message, MessageTypeChoices
 from chat.serializers import MessageSerializer, ChatSerializer
-from core.commonResponses import errorResponse
 from core.models import Image, Content
 
 
-def get_sender_index(data: dict) -> int:
-    users = get_users_from_code(data['chat_code'])
-    return users.index(data['sender_id'])
+def get_sender_index(chat_code: str, sender_id: int) -> int:
+    users = get_users_from_code(chat_code)
+    return users.index(sender_id)
 
 
-def add_message_to_chat(data: dict) -> dict:
-    chat = get_object_or_404(Chat.objects.all(), chat_code=data['chat_code'])
+@database_sync_to_async
+def add_message_to_chat(data: dict, user: AppUser, chat_code: str) -> dict:
+    chats = Chat.objects.filter(chat_code=chat_code)
 
-    if not chat:
-        return errorResponse(detail="chat not found")
+    if chats.count():
+        chat = chats.first()
+    else:
+        chat = Chat(chat_code=chat_code)
+        users = get_users_from_code(chat_code)
+        user1 = get_object_or_404(AppUser.objects.all(), pk=users[0])
+        user2 = get_object_or_404(AppUser.objects.all(), pk=users[1])
+        chat.users.add(user1)
+        chat.users.add(user2)
+        chat.save()
 
     message = Message(chat=chat)
     message.type = data['type']
-    message.sender_index = get_sender_index(data)
+    message.sender_index = get_sender_index(chat_code, user.id)
 
     if data['type'] == MessageTypeChoices.TEXT:
         message.text = data['message']
@@ -36,7 +45,7 @@ def add_message_to_chat(data: dict) -> dict:
     message.save()
     data['id'] = message.id
 
-    return data
+    return dict(data)
 
 
 def get_all_chats(user: AppUser) -> list:
