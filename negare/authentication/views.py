@@ -11,10 +11,11 @@ from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.settings import api_settings
 
 from .models import AppUser
-from .serializers import RegisterSerializer, UserIdSerializer, AccessRefreshSerializer
+from .schemas import otp_code_schema
+from .serializers import RegisterSerializer, UserIdSerializer, AccessRefreshSerializer, OtpCodeSerializer
 from core.commonResponses import invalidDataResponse, successResponse
 
-from .utils import register_user
+from .utils import register_user, is_otp_code_valid
 from .tasks import send_email
 
 
@@ -82,3 +83,25 @@ class SendOtpCodeView(APIView):
 
         return successResponse()
 
+
+class VerifyOtpCode(APIView):
+    permission_classes = ()
+    authentication_classes = ()
+
+    @swagger_auto_schema(
+        request_body= OtpCodeSerializer,
+        responses={
+            200: otp_code_schema(),
+            404: not_found_schema()
+        },
+    )
+    def post(self, request, pk):
+        user = get_object_or_404(AppUser.objects.all(), pk=pk)
+        serializer = OtpCodeSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return invalidDataResponse()
+
+        is_valid = is_otp_code_valid(user.id, serializer.validated_data['otp_code'])
+
+        return successResponse(valid=is_valid)

@@ -26,7 +26,7 @@ def get_otp_code(user_id: int) -> str:
 
 
 def is_otp_code_valid(user_id: int, otp_code: str) -> bool:
-    broker = redis.Redis("redis", 6739)
+    broker = redis.Redis("redis", 6379)
     saved_otp_byte = broker.get('otp_' + str(user_id))
     if not saved_otp_byte:
         return False
