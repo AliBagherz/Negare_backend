@@ -2,7 +2,7 @@ from rest_framework.generics import get_object_or_404
 
 from art.models import ArtPiece
 from authentication.models import AppUser
-from core.models import Image
+from core.models import Image, Content
 
 
 def likeArtPiece(art_piece: ArtPiece, user: AppUser):
@@ -23,8 +23,9 @@ def create_new_art_piece(owner: AppUser, cover_id: int, art_type: str) -> int:
     return art_piece.id
 
 
-def add_content_to_art_piece(art_piece: ArtPiece, file):
-    art_piece.file = file
+def add_content_to_art_piece(art_piece: ArtPiece, content_id):
+    content = get_object_or_404(Content.objects.all(), id=content_id)
+    art_piece.content = content
     art_piece.save()
 
 

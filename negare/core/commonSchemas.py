@@ -21,3 +21,7 @@ def invalid_data_schema():
         "success": Schema(type=openapi.TYPE_BOOLEAN, default=False),
         "error": Schema(type=openapi.TYPE_STRING, default=ErrorResponse.INVALID_DATA)
     })
+
+
+def permission_denied_schema():
+    return Schema(type=openapi.TYPE_OBJECT, properties={})

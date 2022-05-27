@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'drf_yasg',
     'core',
     'authentication',
-    'art'
+    'channels',
+    'art',
+    'chat'
 ]
 
 MIDDLEWARE = [
@@ -85,7 +87,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'negare.wsgi.application'
+ASGI_APPLICATION = 'negare.asgi.application'
 
 
 # Database
@@ -145,7 +147,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MINIO_EXTERNAL_ENDPOINT = "0.0.0.0:9006"
+# MINIO_EXTERNAL_ENDPOINT = "0.0.0.0:9006"
+MINIO_EXTERNAL_ENDPOINT = "188.121.110.151:9006"
 MINIO_EXTERNAL_ENDPOINT_USE_HTTPS = False
 MINIO_ENDPOINT = 'minio:9006'
 MINIO_ACCESS_KEY = 'negare-user'
@@ -153,7 +156,7 @@ MINIO_SECRET_KEY = '12345678'
 MINIO_STORAGE_USE_HTTPS = False
 MINIO_STORAGE_MEDIA_BUCKET_NAME = 'local-media'
 MINIO_PRIVATE_BUCKETS = [
-    'art-pieces',
+    'contents'
 ]
 MINIO_USE_HTTPS = False
 
@@ -174,3 +177,12 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = 'authentication.AppUser'
+
+CHANNEL_LAYERS = {
+    'default': {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    }
+}
