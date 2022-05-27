@@ -1,21 +1,21 @@
 from django.utils.module_loading import import_string
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.commonSchemas import invalid_data_schema
+from core.commonSchemas import invalid_data_schema, success_schema, not_found_schema
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.settings import api_settings
 
 from .models import AppUser
-from .schemas import create_user_schema
 from .serializers import RegisterSerializer, UserIdSerializer, AccessRefreshSerializer
-from core.commonResponses import invalidDataResponse
+from core.commonResponses import invalidDataResponse, successResponse
 
 from .utils import register_user
-from core.responseMessages import ErrorResponse, SuccessResponse
+from .tasks import send_email
 
 
 class RegisterView(APIView):
@@ -63,3 +63,22 @@ class LoginView(APIView):
             raise InvalidToken(e.args[0])
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+
+class SendOtpCodeView(APIView):
+    permission_classes = ()
+    authentication_classes = ()
+
+    @swagger_auto_schema(
+        responses={
+            200: success_schema(),
+            404: not_found_schema()
+        },
+    )
+    def post(self, request, pk):
+        user = get_object_or_404(AppUser.objects.all(), pk=pk)
+
+        send_email.apply_async(args=(user.id,))
+
+        return successResponse()
+

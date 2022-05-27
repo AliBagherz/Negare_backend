@@ -16,6 +16,12 @@ def success_schema():
     })
 
 
+def error_schema():
+    return Schema(type=openapi.TYPE_OBJECT, properties={
+        "success": Schema(type=openapi.TYPE_BOOLEAN, default=False)
+    })
+
+
 def invalid_data_schema():
     return Schema(type=openapi.TYPE_OBJECT, properties={
         "success": Schema(type=openapi.TYPE_BOOLEAN, default=False),
@@ -24,4 +30,8 @@ def invalid_data_schema():
 
 
 def permission_denied_schema():
+    return Schema(type=openapi.TYPE_OBJECT, properties={})
+
+
+def no_input_schema():
     return Schema(type=openapi.TYPE_OBJECT, properties={})

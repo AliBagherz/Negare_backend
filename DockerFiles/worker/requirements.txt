@@ -46,3 +46,5 @@ uritemplate==4.1.1
 urllib3==1.26.9
 wrapt==1.13.3
 channels-redis==3.4.0
+celery==5.2.1
+redis==4.3.1
