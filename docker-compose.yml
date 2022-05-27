@@ -33,3 +33,5 @@ services:
     ports:
       - "9005:9005"
       - "9006:9006"
+    volumes:
+      - /mnt/data:/data

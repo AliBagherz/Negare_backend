@@ -2,10 +2,12 @@ import json
 
 from channels.consumer import AsyncConsumer
 
+from chat.serializers import NewMessageSerializer
+from chat.utils import add_message_to_chat
+
 
 class ChatConsumer(AsyncConsumer):
     async def websocket_connect(self, event):
-        print('Connected', event)
         await self.send(
             {
                 'type': 'websocket.accept'
@@ -13,21 +15,31 @@ class ChatConsumer(AsyncConsumer):
         )
 
     async def websocket_receive(self, event):
-        print('receive', event)
         received_data = json.loads(event['text'])
-        _type = received_data.get('type')
+        serializer = NewMessageSerializer(data=received_data)
 
-        if not _type:
-            return False
+        if serializer.is_valid():
+            response = add_message_to_chat(serializer.validated_data)
 
-        # ToDo: handle message models
+            await self.send(
+                {
+                    'type': 'websocket.send',
+                    'text': json.dumps(response)
+                }
+            )
+        else:
+            await self.send(
+                {
+                    'type': 'websocket.send',
+                    'text': json.dumps(
+                        {
+                            "success": False,
+                            "detail": "invalid data"
+                        }
+                    )
+                }
+            )
 
-        await self.send(
-            {
-                'type': 'websocket.send',
-                'text': json.dumps({})
-            }
-        )
 
     async def websocket_disconnect(self, event):
         print('disconnect', event)

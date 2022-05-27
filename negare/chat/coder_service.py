@@ -31,5 +31,5 @@ def get_chat_code(user1: int, user2: int) -> str:
 
 def get_users_from_code(chat_code: str) -> list:
     chat_text = decode_text(chat_code)
-    smaller, bigger = chat_text.split('_')
+    smaller, bigger = map(int, chat_text.split('_'))
     return [smaller, bigger]
