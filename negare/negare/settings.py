@@ -146,6 +146,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
 # MINIO_EXTERNAL_ENDPOINT = "0.0.0.0:9006"
 MINIO_EXTERNAL_ENDPOINT = "188.121.110.151:9006"
