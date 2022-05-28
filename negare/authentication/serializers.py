@@ -32,3 +32,7 @@ class AccessRefreshSerializer(serializers.Serializer):
     access = serializers.CharField()
     refresh = serializers.CharField()
 
+
+class OtpCodeSerializer(serializers.Serializer):
+    otp_code = serializers.CharField(max_length=300)
+
