@@ -1,9 +1,9 @@
-name: CD
+name: cd
 
 on:
   workflow_run:
-    workflows: [ CI ]
-    branches: [ main ]
+    workflows: [ master-ci ]
+    branches: [ master ]
     types:
       - completed
 
