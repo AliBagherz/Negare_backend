@@ -1,0 +1,45 @@
+version: "3.3"
+
+services:
+  db:
+    image: m.docker-registry.ir/postgres:12.9
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345678
+      - POSTGRES_DB=negare-database
+    ports:
+      - "15432:5432"
+  web:
+    image: "ghcr.io/alibagherz/negare:${TAG}"
+    tty: true
+    environment:
+      - DB_HOST=db
+      - DEBUG=True
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345678
+      - POSTGRES_DB=negare-database
+    command: /bin/bash -c "cd negare && python manage.py makemigrations && python manage.py migrate && celery -A negare worker -D && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+      - "5555:5555"
+    depends_on:
+      - db
+      - minio
+      - redis
+  minio:
+    image: m.docker-registry.ir/minio/minio:edge
+    command: minio server ./data --address '0.0.0.0:9006' --console-address "0.0.0.0:9005"
+    ports:
+      - "9005:9005"
+      - "9006:9006"
+    volumes:
+      - /mnt/data:/data
+  redis:
+    image: m.docker-registry.ir/redis:latest
+    command: redis-server
+    ports:
+      - "16379:6379"
