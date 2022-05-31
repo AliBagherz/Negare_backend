@@ -27,7 +27,7 @@ jobs:
 #        pip install -r DockerFiles/worker/requirements.txt
     - name: build docker
       run: |
-        docker build . -t ghcr.io/alibagherz/negare:${{ github.sha }} -f ./DockerFiles/worker/DockerFile
+        docker build . -t ghcr.io/alibagherz/negare:${{ github.sha }}
     - name: push
       run: |
         docker login --username=AliBagherz --password=${{ secrets.PERSONAL_ACCESS_TOKEN }} ghcr.io

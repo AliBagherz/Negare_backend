@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   db:
-    build: ./DockerFiles/postgres
+    image: m.docker-registry.ir/postgres:12.9
     volumes:
       - ./data/db:/var/lib/postgresql/data
     environment:
@@ -31,7 +31,7 @@ services:
       - minio
       - redis
   minio:
-    build: ./DockerFiles/minio
+    image: m.docker-registry.ir/minio/minio:edge
     command: minio server ./data --address '0.0.0.0:9006' --console-address "0.0.0.0:9005"
     ports:
       - "9005:9005"

@@ -1,1 +1,0 @@
-FROM m.docker-registry.ir/postgres:12.9
