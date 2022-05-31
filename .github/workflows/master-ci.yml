@@ -21,17 +21,17 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r DockerFiles/worker/requirements.txt
+#    - name: Install Dependencies
+#      run: |
+#        python -m pip install --upgrade pip
+#        pip install -r DockerFiles/worker/requirements.txt
     - name: build docker
       run: |
-        docker build . -t ghcr.io/alibagherz/negare:${{ github.sha }}
+        docker build . -t ghcr.io/alibagherz/negare:${{ github.sha }} -f ./DockerFiles/worker/DockerFile
     - name: push
       run: |
         docker login --username=AliBagherz --password=${{ secrets.PERSONAL_ACCESS_TOKEN }} ghcr.io
         docker push ghcr.io/alibagherz/negare:${{ github.sha }}
-    - name: Run Tests
-      run: |
-        python negare/manage.py test
+#    - name: Run Tests
+#      run: |
+#        python negare/manage.py test
