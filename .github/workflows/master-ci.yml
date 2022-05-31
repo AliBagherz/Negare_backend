@@ -27,11 +27,11 @@ jobs:
         pip install -r DockerFiles/worker/requirements.txt
     - name: build docker
       run: |
-        docker build . -t ghcr.io/AliBagherz/negare:${{ github.sha }}
+        docker build . -t ghcr.io/alibagherz/negare:${{ github.sha }}
     - name: push
       run: |
         docker login --username=AliBagherz --password=${{ secrets.PERSONAL_ACCESS_TOKEN }} ghcr.io
-        docker push ghcr.io/AliBagherz/negare:${{ github.sha }}
+        docker push ghcr.io/alibagherz/negare:${{ github.sha }}
     - name: Run Tests
       run: |
         python negare/manage.py test
