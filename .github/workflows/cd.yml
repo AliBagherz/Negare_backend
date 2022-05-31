@@ -20,4 +20,4 @@ jobs:
       - name: Deploy
         shell: bash
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@188.121.110.151 "cd negare/Negare_backend && export TAG=${{ github.sha }} && docker-compose down && docker-compose-cd.yml up -d"
+          ssh -o StrictHostKeyChecking=no ubuntu@188.121.110.151 "cd negare/Negare_backend && export TAG=${{ github.sha }} && docker-compose down && docker-compose -f docker-compose-cd.yml up -d"
