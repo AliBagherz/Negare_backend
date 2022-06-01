@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ArtPieceView, LikeArtPieceView, ArtPieceCoverView, ArtPieceContentView, Gallery
+from .views import ArtPieceView, LikeArtPieceView, ArtPieceCoverView, ArtPieceContentView
 
 app_name = "art"
 urlpatterns = [
