@@ -1,5 +1,4 @@
 from django.db import models
-from django_minio_backend import MinioBackend, iso_date_prefix
 
 from core.models import BaseModel, Image
 from django.utils.translation import gettext_lazy as _

@@ -13,9 +13,19 @@ def art_piece_id_schema():
         "art_piece_id": Schema(type=openapi.TYPE_INTEGER)
     })
 
+
 def gallery_schema():
     return Schema(type=openapi.TYPE_OBJECT, properties={
-        "owner": Schema(type=openapi.TYPE_OBJECT),
+        "owner": Schema(type=openapi.TYPE_OBJECT, properties={
+            "id": Schema(type=openapi.TYPE_STRING),
+            "full_name": Schema(type=openapi.TYPE_STRING)
+        }),
         "posts_count": Schema(type=openapi.TYPE_INTEGER),
-        "posts": Schema(type=openapi.TYPE_ARRAY)
+        "posts": Schema(type=openapi.TYPE_ARRAY, items=Schema(type=openapi.TYPE_OBJECT, properties={
+            "id": Schema(type=openapi.TYPE_STRING),
+            "title": Schema(type=openapi.TYPE_STRING),
+            "type": Schema(type=openapi.TYPE_STRING),
+            "image": Schema(type=openapi.TYPE_STRING),
+            "count_LIKE": Schema(type=openapi.TYPE_INTEGER)
+        }))
     })

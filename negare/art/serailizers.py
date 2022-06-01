@@ -4,7 +4,8 @@ from authentication.serializers import UserSerializer
 from .models import ArtPiece, ArtTypeChoice
 from core.serializers import ImageSerializer
 
-from ..userprofile.models import UserProfile
+from authentication.models import AppUser
+# from userprofile.models import UserProfile
 
 
 class ArtPieceSerializer(serializers.ModelSerializer):
@@ -64,37 +65,35 @@ class ArtPieceDetailSerializer(serializers.Serializer):
     description = serializers.CharField(max_length=1000, allow_null=True)
 
 
-class GallerySerializer(serializers.Serializer):
+class GallerySerializer(serializers.ModelSerializer):
     owner = serializers.SerializerMethodField("get_owner")
     posts_count = serializers.SerializerMethodField("get_posts_count")
     posts = serializers.SerializerMethodField("get_posts")
 
     @staticmethod
-    def get_owner(self):
-        owner = self.context.get("user")
-        owner: UserProfile = UserProfile.objects.get(user=owner)
-        return {
-            "id": owner.id,
-            "full_name": owner.first_name + " " + owner.last_name
-        }
+    def get_owner(user):
+        return UserSerializer(user).data
 
     @staticmethod
-    def get_posts_count(self):
-        owner = self.context.get("user")
-        owner: UserProfile = UserProfile.objects.get(user=owner)
+    def get_posts_count(owner):
         return owner.art_pieces.count()
 
-    @staticmethod
-    def get_posts(self):
-        owner = self.context.get("user")
-        owner: UserProfile = UserProfile.objects.get(user=owner)
+    def get_posts(self, owner):
         list_posts = []
-        for post in owner.posts:
+        url = self.context['request'].build_absolute_uri()
+        base_index = url.index('//')
+        slash_index = url.index('/', base_index + 2)
+        base_url = url[0:slash_index]
+        for post in owner.art_pieces.all():
             list_posts.append({
                 "id": post.id,
                 "title": post.title,
                 "type": post.type,
-                "thumbnail": ImageSerializer(post.cover),
-                "count_like": post.liked_users.count
+                "image": base_url + ImageSerializer(post.cover).data['image']['full_size'] if post.cover else '',
+                "count_like": post.liked_users.count()
             })
         return list_posts
+
+    class Meta:
+        model = AppUser
+        fields = ['owner', 'posts_count', 'posts']

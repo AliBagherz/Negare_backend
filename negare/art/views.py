@@ -10,10 +10,12 @@ from .models import ArtPiece
 
 from art.serailizers import ArtPieceSerializer, ArtPieceCoverSerializer, ArtPieceContentSerializer, \
     ArtPieceDetailSerializer
-from .schemas import like_schema, art_piece_id_schema
+from .schemas import like_schema, art_piece_id_schema, gallery_schema
 from .serailizers import GallerySerializer
 from .utils import likeArtPiece, create_new_art_piece, add_content_to_art_piece, add_detail_to_art_piece
 from core.responseMessages import SuccessResponse, ErrorResponse
+
+from authentication.models import AppUser
 
 
 class ArtPieceView(APIView):
@@ -112,23 +114,3 @@ class ArtPieceContentView(APIView):
         add_content_to_art_piece(art_piece, serializer.validated_data['content_id'])
 
         return successResponse()
-
-class Gallery(APIView):
-    @swagger_auto_schema(
-        request_body=GallerySerializer,
-        responses={
-            200: SuccessResponse.SUCCESS,
-            406: ErrorResponse.INVALID_DATA,
-            404: ErrorResponse.NOT_FOUND
-        },
-    )
-    def get(self, request):
-        serializer = GallerySerializer(
-            many=False,
-            context=
-            {
-                "user": request.user,
-                "request": request
-            }
-        )
-        return Response(serializer.data)
