@@ -12,7 +12,7 @@ services:
     ports:
       - "15432:5432"
   web:
-    build: ./DockerFiles/worker
+    build: .
     tty: true
     environment:
       - DB_HOST=db

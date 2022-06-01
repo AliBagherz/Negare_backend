@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  db:
+    image: m.docker-registry.ir/postgres:12.9
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345678
+      - POSTGRES_DB=negare-database
+    ports:
+      - "15432:5432"
+
+  web:
+    image: "ghcr.io/alibagherz/negare:${TAG}"
+    command: /bin/sh -c "cd negare && sleep 10 && python manage.py test"
+    volumes:
+      - .:/code
+    ports:
+      - "8888:8888"
+    depends_on:
+      - db
+    environment:
+      - PYTHONUNBUFFERED=1
+
+volumes:
+  postgres_data:
