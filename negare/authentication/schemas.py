@@ -11,5 +11,6 @@ def create_user_schema():
 def otp_code_schema():
     return Schema(type=openapi.TYPE_OBJECT, properties={
         "success": Schema(type=openapi.TYPE_BOOLEAN, default=True),
-        "valid": Schema(type=openapi.TYPE_BOOLEAN)
+        "valid": Schema(type=openapi.TYPE_BOOLEAN),
+        "access_token": Schema(type=openapi.TYPE_STRING)
     })
