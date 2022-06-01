@@ -13,7 +13,7 @@ from art.serailizers import ArtPieceSerializer, ArtPieceCoverSerializer, ArtPiec
 from .schemas import like_schema, art_piece_id_schema
 from .serailizers import GallerySerializer
 from .utils import likeArtPiece, create_new_art_piece, add_content_to_art_piece, add_detail_to_art_piece
-from ..core.responseMessages import SuccessResponse, ErrorResponse
+from core.responseMessages import SuccessResponse, ErrorResponse
 
 
 class ArtPieceView(APIView):
