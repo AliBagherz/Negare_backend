@@ -5,6 +5,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from core.commonSchemas import invalid_data_schema, success_schema, not_found_schema
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
@@ -89,7 +90,7 @@ class VerifyOtpCode(APIView):
     authentication_classes = ()
 
     @swagger_auto_schema(
-        request_body= OtpCodeSerializer,
+        request_body=OtpCodeSerializer,
         responses={
             200: otp_code_schema(),
             404: not_found_schema()
@@ -103,5 +104,6 @@ class VerifyOtpCode(APIView):
             return invalidDataResponse()
 
         is_valid = is_otp_code_valid(user.id, serializer.validated_data['otp_code'])
+        access_token = str(TokenObtainPairSerializer.get_token(user).access_token)
 
-        return successResponse(valid=is_valid)
+        return successResponse(valid=is_valid, access_token=access_token if is_valid else '')
