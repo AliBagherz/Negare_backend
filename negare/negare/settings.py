@@ -103,7 +103,7 @@ DATABASES = {
         "HOST": os.getenv("DB_HOST", "localhost"),
         "PORT": 5432,
         'TEST': {
-            'NAME': 'mytestdatabase'
+            'NAME': 'mytestdatabase3'
         }
     }
 }
