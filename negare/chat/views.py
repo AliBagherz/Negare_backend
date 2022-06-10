@@ -15,7 +15,7 @@ class GetAllChatsView(APIView):
         },
     )
     def get(self, request):
-        chats = get_all_chats(request.user)
+        chats = get_all_chats(request.user, request)
         return Response(chats, status=200)
 
 

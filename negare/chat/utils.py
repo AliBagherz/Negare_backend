@@ -49,9 +49,9 @@ def add_message_to_chat(data: dict, user: AppUser, chat_code: str) -> dict:
     return dict(data)
 
 
-def get_all_chats(user: AppUser) -> list:
+def get_all_chats(user: AppUser, request: Request) -> list:
     chats = Chat.objects.filter(users=user).order_by("-updated_at")
-    return ChatSerializer(instance=chats, many=True, context={"user": user}).data
+    return ChatSerializer(instance=chats, many=True, context={"user": user, "request": request}).data
 
 
 def get_all_chat_messages(chat_code: str, user: AppUser, request: Request) -> list:

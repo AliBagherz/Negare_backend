@@ -4,6 +4,7 @@ import random
 import redis
 from rest_framework.response import Response
 
+from userprofile.models import UserProfile
 from .models import AppUser
 
 
@@ -12,6 +13,8 @@ def register_user(data):
     user.set_password(data['password'])
     try:
         user.save()
+        profile = UserProfile.objects.create(user=user)
+        profile.save()
     except Exception as e:
         a = e.args
         return Response({"error": e.args[0]})

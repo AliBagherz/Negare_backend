@@ -1,11 +1,11 @@
 from rest_framework import serializers
 
 from authentication.serializers import UserSerializer
+from core.utils import get_image_full_path_by_image
 from .models import ArtPiece, ArtTypeChoice
 from core.serializers import ImageSerializer
 
 from authentication.models import AppUser
-# from userprofile.models import UserProfile
 
 
 class ArtPieceSerializer(serializers.ModelSerializer):
@@ -66,30 +66,26 @@ class ArtPieceDetailSerializer(serializers.Serializer):
 
 
 class GallerySerializer(serializers.ModelSerializer):
-    owner = serializers.SerializerMethodField("get_owner")
-    posts_count = serializers.SerializerMethodField("get_posts_count")
-    posts = serializers.SerializerMethodField("get_posts")
+    owner = serializers.SerializerMethodField()
+    posts_count = serializers.SerializerMethodField()
+    posts = serializers.SerializerMethodField()
+
+    def get_owner(self, owner):
+        return UserSerializer(instance=owner, context={"request": self.context['request']}).data
 
     @staticmethod
-    def get_owner(user):
-        return UserSerializer(user).data
-
-    @staticmethod
-    def get_posts_count(owner):
+    def get_posts_count(owner) -> int:
         return owner.art_pieces.count()
 
     def get_posts(self, owner):
         list_posts = []
-        url = self.context['request'].build_absolute_uri()
-        base_index = url.index('//')
-        slash_index = url.index('/', base_index + 2)
-        base_url = url[0:slash_index]
+
         for post in owner.art_pieces.all():
             list_posts.append({
                 "id": post.id,
                 "title": post.title,
                 "type": post.type,
-                "image": base_url + ImageSerializer(post.cover).data['image']['full_size'] if post.cover else '',
+                "image": get_image_full_path_by_image(post.cover, self.context['request']) if post.cover else '',
                 "count_like": post.liked_users.count()
             })
         return list_posts
