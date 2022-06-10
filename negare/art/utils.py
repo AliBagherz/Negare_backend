@@ -36,6 +36,7 @@ def add_detail_to_art_piece(art_piece: ArtPiece, data: dict):
         art_piece.price = data['price']
     if data.get('description'):
         art_piece.description = data['description']
+    art_piece.category_id = data['category_id']
     art_piece.is_active = True
 
     art_piece.save()

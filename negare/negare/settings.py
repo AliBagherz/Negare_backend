@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'channels',
     'art',
     'chat',
-    'userprofile'
+    'userprofile',
+    'category'
 ]
 
 MIDDLEWARE = [
