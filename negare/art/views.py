@@ -8,10 +8,11 @@ from core.commonSchemas import not_found_schema, success_schema, invalid_data_sc
 from .models import ArtPiece
 
 from art.serailizers import ArtPieceSerializer, ArtPieceCoverSerializer, ArtPieceContentSerializer, \
-    ArtPieceDetailSerializer
+    ArtPieceDetailSerializer, GetExploreSerializer
 from .schemas import like_schema, art_piece_id_schema, gallery_schema
 from .serailizers import GallerySerializer
-from .utils import likeArtPiece, create_new_art_piece, add_content_to_art_piece, add_detail_to_art_piece
+from .utils import likeArtPiece, create_new_art_piece, add_content_to_art_piece, add_detail_to_art_piece, \
+    get_art_pieces_on_explore
 
 from authentication.models import AppUser
 
@@ -28,8 +29,7 @@ class ArtPieceView(APIView):
         serializer = ArtPieceSerializer(
             art_piece,
             many=False,
-            context=
-            {
+            context={
                 "user": request.user,
                 "request": request
             }
@@ -126,3 +126,32 @@ class GalleryView(APIView):
         owner = get_object_or_404(AppUser.objects.all(), pk=pk)
         serializer = GallerySerializer(many=False, instance=owner, context={"request": request})
         return Response(serializer.data, status=200)
+
+
+class ExploreView(APIView):
+    @swagger_auto_schema(
+        query_serializer=GetExploreSerializer,
+        responses={
+            200: ArtPieceSerializer(many=True),
+            406: invalid_data_schema()
+        },
+    )
+    def get(self, request):
+        serializer = GetExploreSerializer(data=request.GET)
+
+        if not serializer.is_valid():
+            return invalidDataResponse()
+
+        art_pieces = get_art_pieces_on_explore(request.user, serializer.validated_data)
+
+        return Response(
+            ArtPieceSerializer(
+                instance=art_pieces,
+                many=True,
+                context={
+                    "user": request.user,
+                    "request": request
+                }
+            ).data,
+            status=200
+        )

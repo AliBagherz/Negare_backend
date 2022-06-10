@@ -1,3 +1,4 @@
+from django.db.models import F
 from rest_framework.generics import get_object_or_404
 
 from art.models import ArtPiece
@@ -40,4 +41,16 @@ def add_detail_to_art_piece(art_piece: ArtPiece, data: dict):
     art_piece.is_active = True
 
     art_piece.save()
+
+
+def get_art_pieces_on_explore(user: AppUser, data: dict):
+    return ArtPiece.objects.raw('''
+    select aa.id, count(artpiece_id) as like_count from art_artpiece aa
+    inner join art_artpiece_liked_users aalu on aa.id = aalu.artpiece_id
+    where aa.owner_id != %s
+    group by aa.id
+    order by like_count desc
+    limit %s
+    offset %s
+    ''', [user.id, data['page_count'], data['page'] - 1])
 
