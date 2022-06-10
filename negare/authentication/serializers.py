@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from authentication.models import AppUser
+from core.utils import get_image_full_path_by_image
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -12,14 +13,19 @@ class RegisterSerializer(serializers.Serializer):
 
 class UserSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
+    profile_photo = serializers.SerializerMethodField()
+
+    def get_profile_photo(self, app_user):
+        return get_image_full_path_by_image(app_user.user_profile.avatar, self.context['request']) \
+            if app_user.user_profile.avatar else ''
 
     @staticmethod
-    def get_full_name(app_user):
-        app_user.get_full_name()
+    def get_full_name(app_user) -> str:
+        return app_user.get_full_name()
 
     class Meta:
         model = AppUser
-        fields = ["id", "full_name"]
+        fields = ["id", "full_name", "profile_photo"]
 
 
 class UserIdSerializer(serializers.ModelSerializer):

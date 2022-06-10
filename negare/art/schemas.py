@@ -18,6 +18,7 @@ def gallery_schema():
     return Schema(type=openapi.TYPE_OBJECT, properties={
         "owner": Schema(type=openapi.TYPE_OBJECT, properties={
             "id": Schema(type=openapi.TYPE_STRING),
+            "profile_photo": Schema(type=openapi.TYPE_STRING),
             "full_name": Schema(type=openapi.TYPE_STRING)
         }),
         "posts_count": Schema(type=openapi.TYPE_INTEGER),

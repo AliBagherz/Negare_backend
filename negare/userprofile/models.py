@@ -1,6 +1,5 @@
 from django.db import models
 
-# Create your models here.
 from authentication.models import AppUser
 from core.models import BaseModel, Image
 
@@ -24,17 +23,17 @@ class ProfileBase(BaseModel):
         abstract = True
 
 
-# class UserProfile(ProfileBase):
-#     user = models.OneToOneField(
-#         AppUser, on_delete=models.CASCADE, related_name="user_profile"
-#     )
-#     followings = models.ManyToManyField("UserProfile", blank=True, related_name="followers")
-#     followers = models.ManyToManyField("UserProfile", blank=True, related_name="following")
-#
-#     avatar = models.ForeignKey(
-#         Image,
-#         on_delete=models.CASCADE,
-#         blank=True,
-#         null=True,
-#         related_name="avatar_user"
-#     )
+class UserProfile(ProfileBase):
+    user = models.OneToOneField(
+        AppUser, on_delete=models.CASCADE, related_name="user_profile"
+    )
+
+    followers = models.ManyToManyField("UserProfile", blank=True, related_name="following")
+
+    avatar = models.ForeignKey(
+        Image,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="avatar_user"
+    )

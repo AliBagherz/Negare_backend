@@ -1,6 +1,5 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import get_object_or_404
-from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -13,7 +12,6 @@ from art.serailizers import ArtPieceSerializer, ArtPieceCoverSerializer, ArtPiec
 from .schemas import like_schema, art_piece_id_schema, gallery_schema
 from .serailizers import GallerySerializer
 from .utils import likeArtPiece, create_new_art_piece, add_content_to_art_piece, add_detail_to_art_piece
-from core.responseMessages import SuccessResponse, ErrorResponse
 
 from authentication.models import AppUser
 
@@ -114,3 +112,17 @@ class ArtPieceContentView(APIView):
         add_content_to_art_piece(art_piece, serializer.validated_data['content_id'])
 
         return successResponse()
+
+
+class GalleryView(APIView):
+    @swagger_auto_schema(
+        responses={
+            200: gallery_schema(),
+            406: invalid_data_schema(),
+            404: not_found_schema()
+        },
+    )
+    def get(self, request, pk):
+        owner = get_object_or_404(AppUser.objects.all(), pk=pk)
+        serializer = GallerySerializer(many=False, instance=owner, context={"request": request})
+        return Response(serializer.data, status=200)
