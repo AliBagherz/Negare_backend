@@ -26,3 +26,5 @@ class ArtPiece(BaseModel):
     owner = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='art_pieces')
     liked_users = models.ManyToManyField(AppUser, related_name='liked_art_pieces')
     is_active = models.BooleanField(default=False)
+    category = models.ForeignKey("category.Category", on_delete=models.CASCADE, related_name='art_pieces',
+                                 null=True, default=None)

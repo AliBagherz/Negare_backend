@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from authentication.serializers import UserSerializer
+from category.serializers import CategorySerializer
 from core.utils import get_image_full_path_by_image
 from .models import ArtPiece, ArtTypeChoice
 from core.serializers import ImageSerializer
@@ -15,6 +16,7 @@ class ArtPieceSerializer(serializers.ModelSerializer):
     is_user_liked = serializers.SerializerMethodField()
     type = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
+    category = CategorySerializer()
 
     def get_is_user_liked(self, art_piece):
         user = self.context.get("user")
@@ -40,6 +42,7 @@ class ArtPieceSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "price",
+            "category",
             "description",
             "cover",
             "owner",
@@ -63,6 +66,7 @@ class ArtPieceDetailSerializer(serializers.Serializer):
     price = serializers.IntegerField(allow_null=True)
     title = serializers.CharField(max_length=200, allow_null=True)
     description = serializers.CharField(max_length=1000, allow_null=True)
+    category_id = serializers.IntegerField(allow_null=False)
 
 
 class GallerySerializer(serializers.ModelSerializer):
