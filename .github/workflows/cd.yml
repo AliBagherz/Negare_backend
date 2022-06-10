@@ -20,4 +20,4 @@ jobs:
       - name: Deploy
         shell: bash
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@188.121.110.151 "docker login --username=AliBagherz --password=${{ secrets.PERSONAL_ACCESS_TOKEN }} ghcr.io && cd negare/Negare_backend && export TAG=latest && docker-compose down && docker-compose -f docker-compose.cd.yml up -d"
+          ssh -o StrictHostKeyChecking=no ubuntu@188.121.110.151 "docker login --username=AliBagherz --password=${{ secrets.PERSONAL_ACCESS_TOKEN }} ghcr.io && cd negare/Negare_backend && git pull && docker-compose down && docker-compose up -d"
