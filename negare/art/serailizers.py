@@ -97,3 +97,10 @@ class GallerySerializer(serializers.ModelSerializer):
     class Meta:
         model = AppUser
         fields = ['owner', 'posts_count', 'posts']
+
+
+class GetExploreSerializer(serializers.Serializer):
+    page = serializers.IntegerField(default=1, required=False)
+    page_count = serializers.IntegerField(default=15, required=False)
+    category_id = serializers.IntegerField(allow_null=True, default=None, required=False)
+
