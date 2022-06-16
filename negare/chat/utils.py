@@ -45,6 +45,8 @@ def add_message_to_chat(data: dict, user: AppUser, chat_code: str) -> dict:
 
     message.save()
     data['id'] = message.id
+    data['sender_id'] = user.id
+    data['time'] = message.created_at
 
     return dict(data)
 
