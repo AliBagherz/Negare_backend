@@ -19,12 +19,12 @@ class ArtPieceSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
     category = CategorySerializer()
 
-    def get_is_user_liked(self, art_piece):
+    def get_is_user_liked(self, art_piece) -> bool:
         user = self.context.get("user")
         return user in art_piece.liked_users.all()
 
     @staticmethod
-    def get_like_count(art_piece):
+    def get_like_count(art_piece) -> int:
         return art_piece.liked_users.count()
 
     @staticmethod
@@ -51,7 +51,9 @@ class ArtPieceSerializer(serializers.ModelSerializer):
             "like_count",
             "type",
             "is_user_liked",
-            "url"
+            "url",
+            "created_at",
+            "updated_at"
         ]
 
 

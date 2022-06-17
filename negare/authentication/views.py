@@ -11,10 +11,11 @@ from core.commonSchemas import invalid_data_schema, success_schema, not_found_sc
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.settings import api_settings
 
+from core.utils import get_user_id_from_jwt_token
 from .models import AppUser
-from .schemas import otp_code_schema, user_id_schema
+from .schemas import otp_code_schema, user_id_schema, not_verified_schema, un_authorized_schema
 from .serializers import RegisterSerializer, UserIdSerializer, AccessRefreshSerializer, OtpCodeSerializer
-from core.commonResponses import invalidDataResponse, successResponse
+from core.commonResponses import invalidDataResponse, successResponse, errorResponse
 
 from .utils import register_user, is_otp_code_valid
 from .tasks import send_email
@@ -52,7 +53,8 @@ class LoginView(APIView):
         request_body=import_string(api_settings.TOKEN_OBTAIN_SERIALIZER),
         responses={
             201: AccessRefreshSerializer,
-            401: invalid_data_schema(),
+            401: not_verified_schema(),
+            403: un_authorized_schema()
         },
     )
     def post(self, request, *args, **kwargs):
@@ -63,6 +65,11 @@ class LoginView(APIView):
             serializer.is_valid(raise_exception=True)
         except TokenError as e:
             raise InvalidToken(e.args[0])
+
+        user_id = get_user_id_from_jwt_token(serializer.validated_data['access'])
+        user = get_object_or_404(AppUser.objects.all(), pk=user_id)
+        if not user.is_verified:
+            return Response({"verified": False}, status=401)
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
@@ -93,7 +100,8 @@ class VerifyOtpCode(APIView):
         request_body=OtpCodeSerializer,
         responses={
             200: otp_code_schema(),
-            404: not_found_schema()
+            404: not_found_schema(),
+            406: invalid_data_schema()
         },
     )
     def post(self, request, pk):
@@ -103,7 +111,7 @@ class VerifyOtpCode(APIView):
         if not serializer.is_valid():
             return invalidDataResponse()
 
-        is_valid = is_otp_code_valid(user.id, serializer.validated_data['otp_code'])
+        is_valid = is_otp_code_valid(user, serializer.validated_data['otp_code'])
         access_token = str(TokenObtainPairSerializer.get_token(user).access_token)
 
         return successResponse(valid=is_valid, access_token=access_token if is_valid else '')
