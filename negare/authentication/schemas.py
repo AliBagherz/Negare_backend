@@ -14,3 +14,9 @@ def otp_code_schema():
         "valid": Schema(type=openapi.TYPE_BOOLEAN),
         "access_token": Schema(type=openapi.TYPE_STRING)
     })
+
+
+def user_id_schema():
+    return Schema(type=openapi.TYPE_OBJECT, properties={
+        "user_id": Schema(type=openapi.TYPE_INTEGER)
+    })
