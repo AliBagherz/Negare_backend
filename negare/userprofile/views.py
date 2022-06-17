@@ -1,13 +1,9 @@
-from django.shortcuts import render
+from rest_framework.generics import RetrieveUpdateAPIView
 
-# Create your views here.
-from django.urls import path
+from authentication.models import AppUser
+from userprofile.serializers import FullUserSerializer
 
-from negare.userprofile.urls import UserView, FollowUser, remove_follower
 
-app_name = "userprofile"
-urlpatterns = [
-    path("user/", UserView.as_view(), name="user_get"),
-    path("follow/", FollowUser.as_view(), name="follow"),
-    path("follow/remove-follower", remove_follower, name="follow-remove")
-]
+class ProfileView(RetrieveUpdateAPIView):
+    queryset = AppUser.objects.all()
+    serializer_class = FullUserSerializer

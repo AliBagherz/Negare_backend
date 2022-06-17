@@ -15,7 +15,7 @@ from core.utils import get_user_id_from_jwt_token
 from .models import AppUser
 from .schemas import otp_code_schema, user_id_schema, not_verified_schema, un_authorized_schema
 from .serializers import RegisterSerializer, UserIdSerializer, AccessRefreshSerializer, OtpCodeSerializer
-from core.commonResponses import invalidDataResponse, successResponse, errorResponse
+from core.commonResponses import invalidDataResponse, successResponse
 
 from .utils import register_user, is_otp_code_valid
 from .tasks import send_email
