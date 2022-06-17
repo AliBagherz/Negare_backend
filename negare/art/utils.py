@@ -1,4 +1,5 @@
-from django.db.models import F
+from django.db.models import F, CharField, Value
+from django.db.models.functions import Concat
 from rest_framework.generics import get_object_or_404
 
 from art.models import ArtPiece
@@ -56,4 +57,16 @@ def get_art_pieces_on_explore(user: AppUser, data: dict):
     limit %s
     offset %s
     ''', [user.id, data['page_count'], data['page'] - 1])
+
+
+def get_art_pieces_in_search(query: str):
+    return ArtPiece.objects.filter(title__icontains=query)[:10]
+
+
+def get_artists_in_search(query: str):
+    return AppUser.objects.annotate(
+        full_name=Concat(F('first_name'), Value(' '), F('last_name'), output_field=CharField())
+    ).filter(
+        full_name__icontains=query
+    )[:10]
 
