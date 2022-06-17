@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from channels.db import database_sync_to_async
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
@@ -44,9 +46,12 @@ def add_message_to_chat(data: dict, user: AppUser, chat_code: str) -> dict:
         message.content = content
 
     message.save()
+    chat.updated_at = datetime.now()
+    chat.save()
     data['id'] = message.id
     data['sender_id'] = user.id
-    data['time'] = message.created_at.strftime("%Y-%m-%dT%H:%M:%S.%f+04:30")
+    data['time'] = message.created_at.replace(tzinfo=timezone.utc).astimezone(tz=None)\
+        .strftime("%Y-%m-%dT%H:%M:%S.%f+04:30")
 
     return dict(data)
 
