@@ -9,14 +9,12 @@ from core.serializers import ImageSerializer
 from authentication.models import AppUser
 
 
-class ArtPieceSerializer(serializers.ModelSerializer):
+class ArtPieceCompactSerializer(serializers.ModelSerializer):
     cover = ImageSerializer(many=False)
-    images = ImageSerializer(many=True)
     owner = UserSerializer()
     like_count = serializers.SerializerMethodField()
     is_user_liked = serializers.SerializerMethodField()
     type = serializers.SerializerMethodField()
-    url = serializers.SerializerMethodField()
     category = CategorySerializer()
 
     def get_is_user_liked(self, art_piece) -> bool:
@@ -30,6 +28,24 @@ class ArtPieceSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_type(art_piece):
         return art_piece.get_type_display()
+
+    class Meta:
+        model = ArtPiece
+        fields = [
+            "id",
+            "title",
+            "category",
+            "cover",
+            "owner",
+            "like_count",
+            "type",
+            "is_user_liked"
+        ]
+
+
+class ArtPieceSerializer(ArtPieceCompactSerializer):
+    images = ImageSerializer(many=True)
+    url = serializers.SerializerMethodField()
 
     @staticmethod
     def get_url(art_piece):
@@ -109,3 +125,11 @@ class GetExploreSerializer(serializers.Serializer):
     page_count = serializers.IntegerField(default=15, required=False)
     category_id = serializers.IntegerField(allow_null=True, default=None, required=False)
 
+
+class GetSearchSerializer(serializers.Serializer):
+    query = serializers.CharField(max_length=200, required=False, allow_blank=True, default='')
+
+
+class SearchResultSerializer(serializers.Serializer):
+    artists = UserSerializer(many=True)
+    art_pieces = ArtPieceCompactSerializer(many=True)

@@ -3,16 +3,18 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from authentication.serializers import UserSerializer
 from core.commonResponses import successResponse, invalidDataResponse
 from core.commonSchemas import not_found_schema, success_schema, invalid_data_schema
 from .models import ArtPiece
 
 from art.serailizers import ArtPieceSerializer, ArtPieceCoverSerializer, ArtPieceContentSerializer, \
-    ArtPieceDetailSerializer, GetExploreSerializer
+    ArtPieceDetailSerializer, GetExploreSerializer, SearchResultSerializer, GetSearchSerializer, \
+    ArtPieceCompactSerializer
 from .schemas import like_schema, art_piece_id_schema, gallery_schema
 from .serailizers import GallerySerializer
 from .utils import likeArtPiece, create_new_art_piece, add_content_to_art_piece, add_detail_to_art_piece, \
-    get_art_pieces_on_explore
+    get_art_pieces_on_explore, get_art_pieces_in_search, get_artists_in_search
 
 from authentication.models import AppUser
 
@@ -153,5 +155,39 @@ class ExploreView(APIView):
                     "request": request
                 }
             ).data,
+            status=200
+        )
+
+
+class SearchView(APIView):
+    @swagger_auto_schema(
+        query_serializer=GetSearchSerializer,
+        responses={
+            200: SearchResultSerializer,
+            406: invalid_data_schema()
+        }
+    )
+    def get(self, request):
+        serializer = GetSearchSerializer(data=request.GET)
+
+        if not serializer.is_valid():
+            return invalidDataResponse()
+
+        query = serializer.validated_data['query']
+        art_pieces = get_art_pieces_in_search(query)
+        artists = get_artists_in_search(query)
+
+        return Response(
+            {
+                "artists": UserSerializer(instance=artists, many=True, context={"request": request}).data,
+                "art_pieces": ArtPieceCompactSerializer(
+                    instance=art_pieces,
+                    many=True,
+                    context={
+                        "user": request.user,
+                        "request": request
+                    }
+                ).data
+            },
             status=200
         )
