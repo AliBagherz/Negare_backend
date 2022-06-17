@@ -12,7 +12,7 @@ from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.settings import api_settings
 
 from .models import AppUser
-from .schemas import otp_code_schema
+from .schemas import otp_code_schema, user_id_schema
 from .serializers import RegisterSerializer, UserIdSerializer, AccessRefreshSerializer, OtpCodeSerializer
 from core.commonResponses import invalidDataResponse, successResponse
 
@@ -107,3 +107,13 @@ class VerifyOtpCode(APIView):
         access_token = str(TokenObtainPairSerializer.get_token(user).access_token)
 
         return successResponse(valid=is_valid, access_token=access_token if is_valid else '')
+
+
+class GetUserIdView(APIView):
+    @swagger_auto_schema(
+        responses={
+            200: user_id_schema()
+        }
+    )
+    def get(self, request):
+        return Response({"user_id": request.user.id})

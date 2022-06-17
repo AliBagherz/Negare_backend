@@ -1,7 +1,7 @@
 
 from django.urls import path
 from rest_framework_simplejwt import views as jwt_views
-from .views import RegisterView, LoginView, SendOtpCodeView, VerifyOtpCode
+from .views import RegisterView, LoginView, SendOtpCodeView, VerifyOtpCode, GetUserIdView
 
 app_name = "authentication"
 urlpatterns = [
@@ -10,5 +10,6 @@ urlpatterns = [
     path("logout/", jwt_views.TokenRefreshView.as_view(), name="logout"),
     path("verify/", jwt_views.TokenVerifyView.as_view(), name="verify"),
     path('send-otp-code/<int:pk>/', SendOtpCodeView.as_view(), name='send-otp-code'),
-    path('verify-otp-code/<int:pk>/', VerifyOtpCode.as_view(), name='verify-otp-code')
+    path('verify-otp-code/<int:pk>/', VerifyOtpCode.as_view(), name='verify-otp-code'),
+    path('me/', GetUserIdView.as_view, name='get-user-id')
 ]
