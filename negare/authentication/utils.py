@@ -28,10 +28,18 @@ def get_otp_code(user_id: int) -> str:
     return otp_code
 
 
-def is_otp_code_valid(user_id: int, otp_code: str) -> bool:
+def is_otp_code_valid(user: AppUser, otp_code: str) -> bool:
     broker = redis.Redis("redis", 6379)
-    saved_otp_byte = broker.get('otp_' + str(user_id))
+    saved_otp_byte = broker.get('otp_' + str(user.id))
     if not saved_otp_byte:
         return False
     saved_otp = saved_otp_byte.decode('UTF-8')
-    return saved_otp == otp_code
+    is_valid = saved_otp == otp_code
+    if is_valid:
+        verify_user(user)
+    return is_valid
+
+
+def verify_user(user: AppUser):
+    user.is_verified = True
+    user.save()

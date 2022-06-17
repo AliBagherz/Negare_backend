@@ -11,6 +11,7 @@ from authentication.models import AppUser
 
 class ArtPieceSerializer(serializers.ModelSerializer):
     cover = ImageSerializer(many=False)
+    images = ImageSerializer(many=True)
     owner = UserSerializer()
     like_count = serializers.SerializerMethodField()
     is_user_liked = serializers.SerializerMethodField()
@@ -18,12 +19,12 @@ class ArtPieceSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
     category = CategorySerializer()
 
-    def get_is_user_liked(self, art_piece):
+    def get_is_user_liked(self, art_piece) -> bool:
         user = self.context.get("user")
         return user in art_piece.liked_users.all()
 
     @staticmethod
-    def get_like_count(art_piece):
+    def get_like_count(art_piece) -> int:
         return art_piece.liked_users.count()
 
     @staticmethod
@@ -45,11 +46,14 @@ class ArtPieceSerializer(serializers.ModelSerializer):
             "category",
             "description",
             "cover",
+            "images",
             "owner",
             "like_count",
             "type",
             "is_user_liked",
-            "url"
+            "url",
+            "created_at",
+            "updated_at"
         ]
 
 
@@ -63,10 +67,11 @@ class ArtPieceCoverSerializer(serializers.Serializer):
 
 
 class ArtPieceDetailSerializer(serializers.Serializer):
-    price = serializers.IntegerField(allow_null=True)
-    title = serializers.CharField(max_length=200, allow_null=True)
-    description = serializers.CharField(max_length=1000, allow_null=True)
-    category_id = serializers.IntegerField(allow_null=False)
+    price = serializers.IntegerField(allow_null=True, required=False)
+    title = serializers.CharField(max_length=200, allow_null=True, required=False)
+    description = serializers.CharField(max_length=1000, allow_null=True, required=False)
+    category_id = serializers.IntegerField(allow_null=False, required=False)
+    image_ids = serializers.ListField(child=serializers.IntegerField(), required=False, allow_null=True)
 
 
 class GallerySerializer(serializers.ModelSerializer):
