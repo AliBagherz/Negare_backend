@@ -14,3 +14,21 @@ def otp_code_schema():
         "valid": Schema(type=openapi.TYPE_BOOLEAN),
         "access_token": Schema(type=openapi.TYPE_STRING)
     })
+
+
+def user_id_schema():
+    return Schema(type=openapi.TYPE_OBJECT, properties={
+        "user_id": Schema(type=openapi.TYPE_INTEGER)
+    })
+
+
+def not_verified_schema():
+    return Schema(type=openapi.TYPE_OBJECT, properties={
+        "verified": Schema(type=openapi.TYPE_BOOLEAN, default=False)
+    })
+
+
+def un_authorized_schema():
+    return Schema(type=openapi.TYPE_OBJECT, properties={
+        "detail": Schema(type=openapi.TYPE_STRING, default="No active account found with the given credentials")
+    })

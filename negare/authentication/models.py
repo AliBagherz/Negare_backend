@@ -21,3 +21,4 @@ class AppUser(AbstractUser):
         },
     )
     email = models.EmailField(_("email address"), blank=False, null=False, unique=True)
+    is_verified = models.BooleanField(default=False, null=False, blank=False)

@@ -21,10 +21,11 @@ class ArtPiece(BaseModel):
         choices=ArtTypeChoice.choices,
         default=ArtTypeChoice.PICTURE
     )
-    cover = models.ForeignKey(Image, on_delete=models.CASCADE, blank=True, related_name='art_pieces', null=True)
+    cover = models.ForeignKey(Image, on_delete=models.CASCADE, blank=True, related_name='art_pieces_cover', null=True)
     content = models.ForeignKey("core.Content", on_delete=models.CASCADE, related_name='art_piece', null=True)
     owner = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='art_pieces')
     liked_users = models.ManyToManyField(AppUser, related_name='liked_art_pieces')
     is_active = models.BooleanField(default=False)
     category = models.ForeignKey("category.Category", on_delete=models.CASCADE, related_name='art_pieces',
                                  null=True, default=None)
+    images = models.ManyToManyField(Image, blank=True, related_name="art_pieces_images")
