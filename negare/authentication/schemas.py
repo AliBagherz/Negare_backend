@@ -32,3 +32,11 @@ def un_authorized_schema():
     return Schema(type=openapi.TYPE_OBJECT, properties={
         "detail": Schema(type=openapi.TYPE_STRING, default="No active account found with the given credentials")
     })
+
+
+def user_schema():
+    return Schema(type=openapi.TYPE_OBJECT, properties={
+        "id": Schema(type=openapi.TYPE_INTEGER),
+        "full_name": Schema(type=openapi.TYPE_STRING),
+        "profile_photo": Schema(type=openapi.TYPE_STRING)
+    })

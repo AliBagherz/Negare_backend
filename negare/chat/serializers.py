@@ -56,7 +56,7 @@ class MessageSerializer(serializers.ModelSerializer):
             return ""
         return message.content.file.url
 
-    def get_is_user_sender(self, message):
+    def get_is_user_sender(self, message) -> bool:
         request_user = self.context['user']
         users = get_users_from_code(message.chat.chat_code)
         sender_id = users[message.sender_index]
