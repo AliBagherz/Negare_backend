@@ -11,5 +11,5 @@ urlpatterns = [
     path("verify/", jwt_views.TokenVerifyView.as_view(), name="verify"),
     path('send-otp-code/<int:pk>/', SendOtpCodeView.as_view(), name='send-otp-code'),
     path('verify-otp-code/<int:pk>/', VerifyOtpCode.as_view(), name='verify-otp-code'),
-    path('me/', GetUserIdView.as_view, name='get-user-id')
+    path('me/', GetUserIdView.as_view(), name='get-user-id')
 ]
