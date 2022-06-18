@@ -41,9 +41,11 @@ def add_message_to_chat(data: dict, user: AppUser, chat_code: str) -> dict:
     elif data['type'] == MessageTypeChoices.PICTURE:
         image = get_object_or_404(Image.objects.all(), pk=int(data['message']))
         message.image = image
+        data["message"] = image.image.url
     else:
         content = get_object_or_404(Content.objects.all(), pk=int(data['message']))
         message.content = content
+        data["message"] = content.file.url
 
     message.save()
     chat.updated_at = datetime.now()

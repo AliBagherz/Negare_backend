@@ -10,8 +10,8 @@ def chat_schema():
         "chat_code": Schema(type=openapi.TYPE_STRING),
         "user": user_schema(),
         "last_message": Schema(type=openapi.TYPE_STRING),
-        "updated_at": Schema(type=openapi.TYPE_STRING),
-        "created_at": Schema(type=openapi.TYPE_STRING)
+        "updated_at": Schema(type=openapi.TYPE_STRING, format="date-time"),
+        "created_at": Schema(type=openapi.TYPE_STRING, format="date-time")
     })
 
 
