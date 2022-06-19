@@ -1,0 +1,13 @@
+from django.urls import path
+
+from comment import views
+
+app_name = "comment"
+urlpatterns = [
+    path("save_comment/", views.save_comment, name="save_comment"),
+    path("get_event_comments/", views.get_all_event_comments, name="get_all_art_comments"),
+    path("get_owner_comments/", views.get_all_owner_comments, name="get_all_owner_comments"),
+    path("get_comment_of_owner/", views.get_comment_of_owner, name="get_all_owner_comments"),
+    path("delete_comment_owner/", views.remove_comment, name="delete_comment"),
+
+]

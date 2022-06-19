@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'art',
     'chat',
     'userprofile',
-    'category'
+    'category',
+    'comment'
 ]
 
 MIDDLEWARE = [
