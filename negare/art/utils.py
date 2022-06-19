@@ -48,15 +48,29 @@ def add_detail_to_art_piece(art_piece: ArtPiece, data: dict):
 
 
 def get_art_pieces_on_explore(user: AppUser, data: dict):
-    return ArtPiece.objects.raw('''
-    select aa.id, count(artpiece_id) as like_count from art_artpiece aa
-    inner join art_artpiece_liked_users aalu on aa.id = aalu.artpiece_id
-    where aa.owner_id != %s
-    group by aa.id
-    order by like_count desc
-    limit %s
-    offset %s
-    ''', [user.id, data['page_count'], data['page'] - 1])
+    category_id = data.get("category_id")
+    if not category_id:
+        return ArtPiece.objects.raw('''
+        select aa.id, count(artpiece_id) as like_count from art_artpiece aa
+        inner join art_artpiece_liked_users aalu on aa.id = aalu.artpiece_id
+        left join category_category cc on aa.category_id = cc.id
+        where aa.owner_id != %s
+        group by aa.id
+        order by like_count desc
+        limit %s
+        offset %s
+        ''', [user.id, data['page_count'], data['page'] - 1])
+    else:
+        return ArtPiece.objects.raw('''
+            select aa.id, count(artpiece_id) as like_count from art_artpiece aa
+            inner join art_artpiece_liked_users aalu on aa.id = aalu.artpiece_id
+            left join category_category cc on aa.category_id = cc.id
+            where aa.owner_id != %s AND (cc.id = %s)
+            group by aa.id
+            order by like_count desc
+            limit %s
+            offset %s
+            ''', [user.id, category_id, data['page_count'], data['page'] - 1])
 
 
 def get_art_pieces_in_search(query: str):
