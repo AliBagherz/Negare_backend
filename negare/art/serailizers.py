@@ -92,6 +92,7 @@ class ArtPieceDetailSerializer(serializers.Serializer):
 
 class GallerySerializer(serializers.ModelSerializer):
     owner = serializers.SerializerMethodField()
+    profile = serializers.SerializerMethodField()
     posts_count = serializers.SerializerMethodField()
     posts = serializers.SerializerMethodField()
 
@@ -101,6 +102,15 @@ class GallerySerializer(serializers.ModelSerializer):
     @staticmethod
     def get_posts_count(owner) -> int:
         return owner.art_pieces.count()
+
+    def get_profile(self, owner: AppUser) -> dict:
+        profile = owner.user_profile
+        user = self.context['user']
+        return {
+            "follower_count": profile.followers.count(),
+            'following_count': profile.following.count(),
+            'is_followed_by_you': user.user_profile in profile.followers.all()
+        }
 
     def get_posts(self, owner):
         list_posts = []
@@ -117,7 +127,7 @@ class GallerySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AppUser
-        fields = ['owner', 'posts_count', 'posts']
+        fields = ['owner', 'profile', 'posts_count', 'posts']
 
 
 class GetExploreSerializer(serializers.Serializer):

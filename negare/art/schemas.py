@@ -21,6 +21,11 @@ def gallery_schema():
             "profile_photo": Schema(type=openapi.TYPE_STRING),
             "full_name": Schema(type=openapi.TYPE_STRING)
         }),
+        "profile": Schema(type=openapi.TYPE_OBJECT, properties={
+            "follower_count": Schema(type=openapi.TYPE_INTEGER),
+            "following_count": Schema(type=openapi.TYPE_INTEGER),
+            "is_followed_by_you": Schema(type=openapi.TYPE_BOOLEAN)
+        }),
         "posts_count": Schema(type=openapi.TYPE_INTEGER),
         "posts": Schema(type=openapi.TYPE_ARRAY, items=Schema(type=openapi.TYPE_OBJECT, properties={
             "id": Schema(type=openapi.TYPE_INTEGER),
