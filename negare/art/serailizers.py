@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import serializers
 
 from authentication.serializers import UserSerializer
@@ -114,14 +115,21 @@ class GallerySerializer(serializers.ModelSerializer):
 
     def get_posts(self, owner):
         list_posts = []
+        business = self.context['business']
 
-        for post in owner.art_pieces.all():
+        if business:
+            price_query = Q(price__gt=0)
+        else:
+            price_query = Q(price=0)
+
+        for post in owner.art_pieces.filter(price_query).order_by('-created_at'):
             list_posts.append({
                 "id": post.id,
                 "title": post.title,
                 "type": post.type,
                 "image": get_image_full_path_by_image(post.cover, self.context['request']) if post.cover else '',
-                "count_like": post.liked_users.count()
+                "count_like": post.liked_users.count(),
+                "price": post.price
             })
         return list_posts
 
@@ -143,3 +151,7 @@ class GetSearchSerializer(serializers.Serializer):
 class SearchResultSerializer(serializers.Serializer):
     artists = UserSerializer(many=True)
     art_pieces = ArtPieceCompactSerializer(many=True)
+
+
+class GetGallerySerializer(serializers.Serializer):
+    business = serializers.BooleanField(default=False, allow_null=True)

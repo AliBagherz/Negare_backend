@@ -10,7 +10,7 @@ from .models import ArtPiece
 
 from art.serailizers import ArtPieceSerializer, ArtPieceCoverSerializer, ArtPieceContentSerializer, \
     ArtPieceDetailSerializer, GetExploreSerializer, SearchResultSerializer, GetSearchSerializer, \
-    ArtPieceCompactSerializer
+    ArtPieceCompactSerializer, GetGallerySerializer
 from .schemas import like_schema, art_piece_id_schema, gallery_schema
 from .serailizers import GallerySerializer
 from .utils import likeArtPiece, create_new_art_piece, add_content_to_art_piece, add_detail_to_art_piece, \
@@ -118,6 +118,7 @@ class ArtPieceContentView(APIView):
 
 class GalleryView(APIView):
     @swagger_auto_schema(
+        query_serializer=GetGallerySerializer,
         responses={
             200: gallery_schema(),
             406: invalid_data_schema(),
@@ -125,8 +126,22 @@ class GalleryView(APIView):
         },
     )
     def get(self, request, pk):
+        serializer = GetGallerySerializer(data=request.GET)
+
+        if not serializer.is_valid():
+            return invalidDataResponse()
+
         owner = get_object_or_404(AppUser.objects.all(), pk=pk)
-        serializer = GallerySerializer(many=False, instance=owner, context={"request": request, "user": request.user})
+        business = serializer.validated_data.get('business', False)
+        serializer = GallerySerializer(
+            many=False,
+            instance=owner,
+            context={
+                "request": request,
+                "user": request.user,
+                "business": business
+            }
+        )
         return Response(serializer.data, status=200)
 
 
