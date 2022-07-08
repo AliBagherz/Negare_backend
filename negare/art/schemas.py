@@ -32,6 +32,7 @@ def gallery_schema():
             "title": Schema(type=openapi.TYPE_STRING),
             "type": Schema(type=openapi.TYPE_STRING),
             "image": Schema(type=openapi.TYPE_STRING),
-            "count_like": Schema(type=openapi.TYPE_INTEGER)
+            "count_like": Schema(type=openapi.TYPE_INTEGER),
+            "price": Schema(type=openapi.TYPE_INTEGER, default=0)
         }))
     })
