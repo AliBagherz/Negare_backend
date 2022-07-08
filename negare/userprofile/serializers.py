@@ -60,3 +60,6 @@ class FullUserSerializer(serializers.ModelSerializer):
         return instance
 
 
+class AddImageSerializer(serializers.Serializer):
+    profile_image_id = serializers.IntegerField()
+

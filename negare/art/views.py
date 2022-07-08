@@ -69,7 +69,7 @@ class LikeArtPieceView(APIView):
 
         likeResponse = likeArtPiece(art_piece, request.user)
 
-        return successResponse(like=likeResponse)
+        return Response({"like": likeResponse}, status=200)
 
 
 class ArtPieceCoverView(APIView):
@@ -126,7 +126,7 @@ class GalleryView(APIView):
     )
     def get(self, request, pk):
         owner = get_object_or_404(AppUser.objects.all(), pk=pk)
-        serializer = GallerySerializer(many=False, instance=owner, context={"request": request})
+        serializer = GallerySerializer(many=False, instance=owner, context={"request": request, "user": request.user})
         return Response(serializer.data, status=200)
 
 
