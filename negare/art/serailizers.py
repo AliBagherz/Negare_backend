@@ -110,7 +110,8 @@ class GallerySerializer(serializers.ModelSerializer):
         return {
             "follower_count": profile.followers.count(),
             'following_count': profile.following.count(),
-            'is_followed_by_you': user.user_profile in profile.followers.all()
+            'is_followed_by_you': user.user_profile in profile.followers.all(),
+            'is_business': profile.is_business
         }
 
     def get_posts(self, owner):

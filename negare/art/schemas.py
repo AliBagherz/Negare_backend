@@ -37,7 +37,8 @@ def gallery_schema():
         "profile": Schema(type=openapi.TYPE_OBJECT, properties={
             "follower_count": Schema(type=openapi.TYPE_INTEGER),
             "following_count": Schema(type=openapi.TYPE_INTEGER),
-            "is_followed_by_you": Schema(type=openapi.TYPE_BOOLEAN)
+            "is_followed_by_you": Schema(type=openapi.TYPE_BOOLEAN),
+            "is_business": Schema(type=openapi.TYPE_BOOLEAN, default=False)
         }),
         "posts_count": Schema(type=openapi.TYPE_INTEGER),
         "posts": Schema(type=openapi.TYPE_ARRAY, items=menu_art_piece_schema())
