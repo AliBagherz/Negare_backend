@@ -20,7 +20,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=12345678
       - POSTGRES_DB=negare-database
-    command: /bin/bash -c "cd negare && python manage.py makemigrations && python manage.py migrate && celery -A negare worker -D && python manage.py runserver 0.0.0.0:8000"
+    command: /bin/bash -c "cd negare && python manage.py makemigrations userprofile comment core art authentication category chat && python manage.py migrate && celery -A negare worker -D && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
