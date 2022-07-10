@@ -3,25 +3,16 @@ from urllib.parse import parse_qs
 from channels.db import database_sync_to_async
 
 from channels.consumer import AsyncConsumer
-from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from authentication.models import AppUser
 from chat.serializers import NewMessageSerializer
 from chat.utils import add_message_to_chat
-from rest_framework_simplejwt.tokens import UntypedToken
-from jwt import decode as jwt_decode
-from django.conf import settings
+from core.utils import get_user_id_from_jwt_token
 
 
 def get_user_id_from_token(scope):
     token = parse_qs(scope["query_string"].decode("utf8"))["token"][0]
-    try:
-        UntypedToken(token)
-    except (InvalidToken, TokenError) as e:
-        return None
-    else:
-        decoded_data = jwt_decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-        return decoded_data['user_id']
+    return get_user_id_from_jwt_token(token)
 
 
 class ChatConsumer(AsyncConsumer):

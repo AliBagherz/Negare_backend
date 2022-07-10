@@ -1,6 +1,8 @@
 from drf_yasg import openapi
 from drf_yasg.openapi import Schema
 
+from authentication.schemas import user_schema
+
 
 def like_schema():
     return Schema(type=openapi.TYPE_OBJECT, properties={
@@ -14,18 +16,29 @@ def art_piece_id_schema():
     })
 
 
-def gallery_schema():
-    return Schema(type=openapi.TYPE_OBJECT, properties={
-        "owner": Schema(type=openapi.TYPE_OBJECT, properties={
-            "id": Schema(type=openapi.TYPE_STRING),
-            "full_name": Schema(type=openapi.TYPE_STRING)
-        }),
-        "posts_count": Schema(type=openapi.TYPE_INTEGER),
-        "posts": Schema(type=openapi.TYPE_ARRAY, items=Schema(type=openapi.TYPE_OBJECT, properties={
-            "id": Schema(type=openapi.TYPE_STRING),
+def menu_art_piece_schema():
+    return Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            "id": Schema(type=openapi.TYPE_INTEGER),
             "title": Schema(type=openapi.TYPE_STRING),
             "type": Schema(type=openapi.TYPE_STRING),
             "image": Schema(type=openapi.TYPE_STRING),
-            "count_LIKE": Schema(type=openapi.TYPE_INTEGER)
-        }))
+            "count_like": Schema(type=openapi.TYPE_INTEGER),
+            "count_comment": Schema(type=openapi.TYPE_INTEGER),
+            "price": Schema(type=openapi.TYPE_INTEGER, default=0)
+        }
+    )
+
+
+def gallery_schema():
+    return Schema(type=openapi.TYPE_OBJECT, properties={
+        "owner": user_schema(),
+        "profile": Schema(type=openapi.TYPE_OBJECT, properties={
+            "follower_count": Schema(type=openapi.TYPE_INTEGER),
+            "following_count": Schema(type=openapi.TYPE_INTEGER),
+            "is_followed_by_you": Schema(type=openapi.TYPE_BOOLEAN)
+        }),
+        "posts_count": Schema(type=openapi.TYPE_INTEGER),
+        "posts": Schema(type=openapi.TYPE_ARRAY, items=menu_art_piece_schema())
     })

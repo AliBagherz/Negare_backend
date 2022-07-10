@@ -1,53 +1,65 @@
 from rest_framework import serializers
 
-from negare.userprofile.models import UserProfile
-
-
-class FollowSerializer(serializers.Serializer):
-    user_id = serializers.IntegerField()
-
-class RemoveFollowerSerializer(serializers.Serializer):
-    user_id = serializers.IntegerField()
+from authentication.models import AppUser
+from core.serializers import ImageSerializer
+from userprofile.models import UserProfile
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    full_name = serializers.SerializerMethodField("get_full_name")
-    username = serializers.SerializerMethodField("get_username")
-    email = serializers.SerializerMethodField("get_email")
-    followers_count = serializers.SerializerMethodField("get_followers_count")
-    followings_count = serializers.SerializerMethodField("get_followings_count")
+    followers_count = serializers.SerializerMethodField()
+    following_count = serializers.SerializerMethodField()
+    avatar = ImageSerializer(required=False)
 
     @staticmethod
-    def get_full_name(user_profile):
-        first = user_profile.first_name
-        last = user_profile.last_name
-        if first or last:
-            return first + (" " if (first and last) else "") + last
-        return None
+    def get_followers_count(profile: UserProfile) -> int:
+        return profile.followers.count()
 
     @staticmethod
-    def get_username(user_profile):
-        return user_profile.user.username
-
-    @staticmethod
-    def get_email(user_profile):
-        return user_profile.user.email
-
-    @staticmethod
-    def get_followers_count(user_profile):
-        followers = user_profile.followers
-        if followers:
-            return len(followers)
-        return 0
-
-    @staticmethod
-    def get_followings_count(user_profile):
-        followings = user_profile.followings
-        if followings:
-            return len(followings)
-        return 0
+    def get_following_count(profile: UserProfile) -> int:
+        return profile.following.count()
 
     class Meta:
         model = UserProfile
-        fields = ["id", "username", "full_name", "following_count", "followers_count", "first_name", "last_name",
-                  "gender", "phone_number", "national_code", "birthdate", "avatar"]
+        fields = [
+            "id",
+            "following_count",
+            "followers_count",
+            "gender",
+            "phone_number",
+            "national_code",
+            "birthdate",
+            "avatar"
+        ]
+
+
+class FullUserSerializer(serializers.ModelSerializer):
+    user_profile = UserProfileSerializer(required=False)
+
+    class Meta:
+        model = AppUser
+        fields = [
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "user_profile"
+        ]
+
+    def update(self, instance, validated_data):
+        profile_instance = instance.user_profile
+        for key, value in validated_data.items():
+            if key == "user_profile":
+                for profile_key, profile_value in validated_data['user_profile'].items():
+                    setattr(profile_instance, profile_key, profile_value)
+            else:
+                setattr(instance, key, value)
+
+        instance.save()
+        profile_instance.save()
+
+        return instance
+
+
+class AddImageSerializer(serializers.Serializer):
+    profile_image_id = serializers.IntegerField()
+

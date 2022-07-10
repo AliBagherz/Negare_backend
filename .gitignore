@@ -3,3 +3,10 @@
 /negare/__sized__/
 /negare/data/
 /negare/images/
+/negare/art/migrations/
+/negare/authentication/migrations/
+/negare/category/migrations/
+/negare/core/migrations/
+/negare/chat/migrations/
+/negare/userprofile/migrations/
+/storage/

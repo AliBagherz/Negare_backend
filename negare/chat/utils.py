@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from channels.db import database_sync_to_async
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
@@ -39,19 +41,26 @@ def add_message_to_chat(data: dict, user: AppUser, chat_code: str) -> dict:
     elif data['type'] == MessageTypeChoices.PICTURE:
         image = get_object_or_404(Image.objects.all(), pk=int(data['message']))
         message.image = image
+        data["message"] = image.image.url
     else:
         content = get_object_or_404(Content.objects.all(), pk=int(data['message']))
         message.content = content
+        data["message"] = content.file.url
 
     message.save()
+    chat.updated_at = datetime.now()
+    chat.save()
     data['id'] = message.id
+    data['sender_id'] = user.id
+    data['time'] = message.created_at.replace(tzinfo=timezone.utc).astimezone(tz=None)\
+        .strftime("%Y-%m-%dT%H:%M:%S.%f+04:30")
 
     return dict(data)
 
 
-def get_all_chats(user: AppUser) -> list:
+def get_all_chats(user: AppUser, request: Request) -> list:
     chats = Chat.objects.filter(users=user).order_by("-updated_at")
-    return ChatSerializer(instance=chats, many=True, context={"user": user}).data
+    return ChatSerializer(instance=chats, many=True, context={"user": user, "request": request}).data
 
 
 def get_all_chat_messages(chat_code: str, user: AppUser, request: Request) -> list:

@@ -2,7 +2,8 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from chat.serializers import ChatSerializer, MessageSerializer, GetChatMessagesSerializer
+from chat.schemas import many_chat_schema
+from chat.serializers import MessageSerializer, GetChatMessagesSerializer
 from chat.utils import get_all_chats, get_all_chat_messages
 from core.commonResponses import invalidDataResponse
 from core.commonSchemas import not_found_schema, permission_denied_schema
@@ -11,11 +12,11 @@ from core.commonSchemas import not_found_schema, permission_denied_schema
 class GetAllChatsView(APIView):
     @swagger_auto_schema(
         responses={
-            200: ChatSerializer(many=True)
+            200: many_chat_schema()
         },
     )
     def get(self, request):
-        chats = get_all_chats(request.user)
+        chats = get_all_chats(request.user, request)
         return Response(chats, status=200)
 
 

@@ -10,7 +10,7 @@ def get_chat_text(user1: int, user2: int) -> str:
         bigger = user1
     else:
         raise Exception("user ids couldn't be same")
-    return str(smaller) + '_' + str(bigger)
+    return str(smaller) + '-' + str(bigger)
 
 
 def encode_text(message: str) -> str:
@@ -30,6 +30,5 @@ def get_chat_code(user1: int, user2: int) -> str:
 
 
 def get_users_from_code(chat_code: str) -> list:
-    chat_text = decode_text(chat_code)
-    smaller, bigger = map(int, chat_text.split('_'))
+    smaller, bigger = map(int, chat_code.split('-'))
     return [smaller, bigger]

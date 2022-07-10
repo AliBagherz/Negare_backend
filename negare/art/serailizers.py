@@ -1,32 +1,52 @@
+from django.db.models import Q
 from rest_framework import serializers
 
 from authentication.serializers import UserSerializer
+from category.serializers import CategorySerializer
 from .models import ArtPiece, ArtTypeChoice
 from core.serializers import ImageSerializer
 
 from authentication.models import AppUser
-# from userprofile.models import UserProfile
+from .services import get_art_piece_menu_dict
 
 
-class ArtPieceSerializer(serializers.ModelSerializer):
+class ArtPieceCompactSerializer(serializers.ModelSerializer):
     cover = ImageSerializer(many=False)
     owner = UserSerializer()
     like_count = serializers.SerializerMethodField()
     is_user_liked = serializers.SerializerMethodField()
     type = serializers.SerializerMethodField()
-    url = serializers.SerializerMethodField()
+    category = CategorySerializer()
 
-    def get_is_user_liked(self, art_piece):
+    def get_is_user_liked(self, art_piece) -> bool:
         user = self.context.get("user")
         return user in art_piece.liked_users.all()
 
     @staticmethod
-    def get_like_count(art_piece):
+    def get_like_count(art_piece) -> int:
         return art_piece.liked_users.count()
 
     @staticmethod
     def get_type(art_piece):
         return art_piece.get_type_display()
+
+    class Meta:
+        model = ArtPiece
+        fields = [
+            "id",
+            "title",
+            "category",
+            "cover",
+            "owner",
+            "like_count",
+            "type",
+            "is_user_liked"
+        ]
+
+
+class ArtPieceSerializer(ArtPieceCompactSerializer):
+    images = ImageSerializer(many=True)
+    url = serializers.SerializerMethodField()
 
     @staticmethod
     def get_url(art_piece):
@@ -40,13 +60,17 @@ class ArtPieceSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "price",
+            "category",
             "description",
             "cover",
+            "images",
             "owner",
             "like_count",
             "type",
             "is_user_liked",
-            "url"
+            "url",
+            "created_at",
+            "updated_at"
         ]
 
 
@@ -60,40 +84,67 @@ class ArtPieceCoverSerializer(serializers.Serializer):
 
 
 class ArtPieceDetailSerializer(serializers.Serializer):
-    price = serializers.IntegerField(allow_null=True)
-    title = serializers.CharField(max_length=200, allow_null=True)
-    description = serializers.CharField(max_length=1000, allow_null=True)
+    price = serializers.IntegerField(allow_null=True, required=False)
+    title = serializers.CharField(max_length=200, allow_null=True, required=False)
+    description = serializers.CharField(max_length=1000, allow_null=True, required=False)
+    category_id = serializers.IntegerField(allow_null=False, required=False)
+    image_ids = serializers.ListField(child=serializers.IntegerField(), required=False, allow_null=True)
 
 
 class GallerySerializer(serializers.ModelSerializer):
-    owner = serializers.SerializerMethodField("get_owner")
-    posts_count = serializers.SerializerMethodField("get_posts_count")
-    posts = serializers.SerializerMethodField("get_posts")
+    owner = serializers.SerializerMethodField()
+    profile = serializers.SerializerMethodField()
+    posts_count = serializers.SerializerMethodField()
+    posts = serializers.SerializerMethodField()
+
+    def get_owner(self, owner):
+        return UserSerializer(instance=owner, context={"request": self.context['request']}).data
 
     @staticmethod
-    def get_owner(user):
-        return UserSerializer(user).data
-
-    @staticmethod
-    def get_posts_count(owner):
+    def get_posts_count(owner) -> int:
         return owner.art_pieces.count()
+
+    def get_profile(self, owner: AppUser) -> dict:
+        profile = owner.user_profile
+        user = self.context['user']
+        return {
+            "follower_count": profile.followers.count(),
+            'following_count': profile.following.count(),
+            'is_followed_by_you': user.user_profile in profile.followers.all()
+        }
 
     def get_posts(self, owner):
         list_posts = []
-        url = self.context['request'].build_absolute_uri()
-        base_index = url.index('//')
-        slash_index = url.index('/', base_index + 2)
-        base_url = url[0:slash_index]
-        for post in owner.art_pieces.all():
-            list_posts.append({
-                "id": post.id,
-                "title": post.title,
-                "type": post.type,
-                "image": base_url + ImageSerializer(post.cover).data['image']['full_size'] if post.cover else '',
-                "count_like": post.liked_users.count()
-            })
+        business = self.context['business']
+
+        if business:
+            price_query = Q(price__gt=0)
+        else:
+            price_query = Q(price=0)
+
+        for post in owner.art_pieces.filter(price_query).order_by('-created_at'):
+            list_posts.append(get_art_piece_menu_dict(post, self.context))
         return list_posts
 
     class Meta:
         model = AppUser
-        fields = ['owner', 'posts_count', 'posts']
+        fields = ['owner', 'profile', 'posts_count', 'posts']
+
+
+class GetExploreSerializer(serializers.Serializer):
+    page = serializers.IntegerField(default=1, required=False)
+    page_count = serializers.IntegerField(default=15, required=False)
+    category_id = serializers.IntegerField(allow_null=True, default=None, required=False)
+
+
+class GetSearchSerializer(serializers.Serializer):
+    query = serializers.CharField(max_length=200, required=False, allow_blank=True, default='')
+
+
+class SearchResultSerializer(serializers.Serializer):
+    artists = UserSerializer(many=True)
+    art_pieces = ArtPieceCompactSerializer(many=True)
+
+
+class GetGallerySerializer(serializers.Serializer):
+    business = serializers.BooleanField(default=False, allow_null=True)

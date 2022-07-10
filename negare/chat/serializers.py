@@ -7,7 +7,7 @@ from authentication.models import AppUser
 from authentication.serializers import UserSerializer
 from chat.coder_service import get_users_from_code
 from chat.models import Chat, Message, MessageTypeChoices
-from core.serializers import ImageSerializer
+from core.services import get_image_full_path_by_image
 
 
 class ChatSerializer(serializers.ModelSerializer):
@@ -24,7 +24,7 @@ class ChatSerializer(serializers.ModelSerializer):
         users = get_users_from_code(chat.chat_code)
         _id = users[1] if users[0] == request_user.id else users[0]
         chat_user = AppUser.objects.get(pk=_id)
-        return UserSerializer(instance=chat_user).data
+        return UserSerializer(instance=chat_user, context={"request":  self.context['request']}).data
 
     class Meta:
         model = Chat
@@ -51,16 +51,12 @@ class MessageSerializer(serializers.ModelSerializer):
         if message.type == MessageTypeChoices.TEXT:
             return message.text
         if message.type == MessageTypeChoices.PICTURE:
-            url = self.context['request'].build_absolute_uri()
-            base_index = url.index('//')
-            slash_index = url.index('/', base_index + 2)
-            base_url = url[0:slash_index]
-            return base_url + ImageSerializer(message.image).data['image']['full_size']
+            return get_image_full_path_by_image(message.image, self.context['request'])
         if not message.content:
             return ""
         return message.content.file.url
 
-    def get_is_user_sender(self, message):
+    def get_is_user_sender(self, message) -> bool:
         request_user = self.context['user']
         users = get_users_from_code(message.chat.chat_code)
         sender_id = users[message.sender_index]
