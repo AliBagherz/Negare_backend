@@ -14,7 +14,7 @@ services:
 
   web:
     image: "ghcr.io/alibagherz/negare:${TAG}"
-    command: /bin/sh -c "cd negare && python manage.py test"
+    command: /bin/sh -c "cd negare && python manage.py makemigrations && python manage.py migrate && python manage.py test"
     volumes:
       - .:/code
     ports:
