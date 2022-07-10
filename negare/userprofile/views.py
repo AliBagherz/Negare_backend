@@ -6,9 +6,9 @@ from rest_framework.views import APIView
 from authentication.models import AppUser
 from core.commonResponses import invalidDataResponse, successResponse
 from core.commonSchemas import not_found_schema, invalid_data_schema, success_schema
-from userprofile.schemas import follow_schema
+from userprofile.schemas import follow_schema, business_schema
 from userprofile.serializers import FullUserSerializer, AddImageSerializer
-from userprofile.utils import add_profile_image, follow_user
+from userprofile.utils import add_profile_image, follow_user, toggle_business
 
 
 class ProfileView(RetrieveUpdateAPIView):
@@ -49,3 +49,16 @@ class FollowUserView(APIView):
         follow_response = follow_user(user, request.user)
 
         return Response({"follow": follow_response}, status=200)
+
+
+class ToggleBusinessView(APIView):
+    @swagger_auto_schema(
+        responses={
+            200: business_schema(),
+            404: not_found_schema(),
+        },
+    )
+    def put(self, request):
+        business_response = toggle_business(request.user)
+
+        return Response({"business": business_response}, status=200)

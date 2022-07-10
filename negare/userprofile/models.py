@@ -15,6 +15,7 @@ class UserProfile(BaseModel):
     gender = models.CharField(choices=GENDER_CHOICES, max_length=1, default='N')
     national_code = models.CharField(max_length=10, null=True, blank=True)
     birthdate = models.CharField(max_length=10, null=True, blank=True)
+    is_business = models.BooleanField(default=False, null=False, blank=False)
 
     user = models.OneToOneField(
         AppUser, on_delete=models.CASCADE, related_name="user_profile"

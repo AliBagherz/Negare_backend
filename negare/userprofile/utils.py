@@ -28,3 +28,16 @@ def follow_user(profile_user: AppUser, my_user: AppUser):
         user_profile.followers.add(my_profile)
         user_profile.save()
         return True
+
+
+def toggle_business(user: AppUser):
+    profile = user.user_profile
+
+    if profile.is_business:
+        profile.is_business = False
+        profile.save()
+        return False
+    else:
+        profile.is_business = True
+        profile.save()
+        return True
