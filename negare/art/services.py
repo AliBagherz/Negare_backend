@@ -11,5 +11,6 @@ def get_art_piece_menu_dict(post: ArtPiece, context: dict) -> dict:
         "image": get_image_full_path_by_image(post.cover, context['request']) if post.cover else '',
         "count_like": post.liked_users.count(),
         "count_comment": Comment.objects.filter(art_piece_id=post.id).count(),
-        "price": post.price
+        "price": post.price,
+        "description": post.description
     }
