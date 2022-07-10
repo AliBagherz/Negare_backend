@@ -8,6 +8,7 @@ from authentication.models import AppUser
 
 from art.models import ArtTypeChoice, ArtPiece
 from core.models import Image
+from userprofile.models import UserProfile
 
 
 class ArtTests(TestCase):
@@ -19,6 +20,7 @@ class ArtTests(TestCase):
         self.user = AppUser.objects.create_user(username='test_user', password='12345678')
         self.user.is_active = True
         self.user.save()
+        UserProfile.objects.create(user=self.user)
         self.client.force_authenticate(self.user)
 
         self.image = Image.objects.create(image=ImageFile(open("./test_images/test.png", "rb")))
