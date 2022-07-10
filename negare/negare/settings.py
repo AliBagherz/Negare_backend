@@ -102,7 +102,7 @@ DATABASES = {
         "NAME": os.getenv("POSTGRES_DB", "negare-database"),
         "USER": os.getenv("POSTGRES_USER", "postgres"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD", "12345678"),
-        "HOST": os.getenv("DB_HOST", "localhost"),
+        "HOST": os.getenv("DB_HOST", "db"),
         "PORT": 5432,
         'TEST': {
             'NAME': 'mytestdatabase3'
