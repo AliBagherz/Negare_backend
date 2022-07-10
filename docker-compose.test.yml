@@ -14,11 +14,11 @@ services:
 
   web:
     image: "ghcr.io/alibagherz/negare:${TAG}"
-    command: /bin/sh -c "cd negare && python manage.py makemigrations userprofile comment core art authentication category chat && python manage.py migrate && python manage.py test"
+    command: /bin/sh -c "cd negare && python manage.py makemigrations userprofile comment core art authentication category chat && python manage.py migrate && coverage run ./manage.py test && coverage report"
     volumes:
       - .:/code
     ports:
-      - "8888:8888"
+      - "8000:8000"
     depends_on:
       - db
     environment:
