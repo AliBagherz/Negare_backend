@@ -19,6 +19,7 @@ def art_piece_id_schema():
 def menu_art_piece_schema():
     return Schema(
         type=openapi.TYPE_OBJECT,
+        required=[],
         properties={
             "id": Schema(type=openapi.TYPE_INTEGER),
             "title": Schema(type=openapi.TYPE_STRING),

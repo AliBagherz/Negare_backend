@@ -53,19 +53,22 @@ class HomePageSerializer(serializers.ModelSerializer):
         }
 
     def get_offers(self, user) -> dict:
+        most_commented_art_piece = get_most_commented_art_piece_last_7_days()
+        most_liked_art_piece = get_most_liked_art_piece_last_7_days()
+        most_commented_user = get_most_commented_user_last_7_days()
         return {
             'most_commented_art_piece_last_7_days': get_art_piece_menu_dict(
-                get_most_commented_art_piece_last_7_days(),
+                most_commented_art_piece,
                 self.context
-            ),
+            ) if most_commented_art_piece else {},
             'most_liked_art_piece_last_7_days': get_art_piece_menu_dict(
-                get_most_liked_art_piece_last_7_days(),
+                most_liked_art_piece,
                 self.context
-            ),
+            ) if most_liked_art_piece else {},
             'most_commented_user_last_7_days': UserSerializer(
-                instance=get_most_commented_user_last_7_days(),
+                instance=most_commented_user,
                 context=self.context
-            ).data
+            ).data if most_commented_user else {}
         }
 
     def get_feed(self, user) -> list:

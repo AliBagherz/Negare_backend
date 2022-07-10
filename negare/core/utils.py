@@ -55,24 +55,40 @@ def get_like_count_user_given_last_30_days(user: AppUser) -> int:
     return int(ArtPiece.objects.filter(liked_users=user).count())
 
 
-def get_most_commented_art_piece_last_7_days() -> ArtPiece:
-    art_piece_id = Comment.objects.filter(created_at__range=get_last_days_range(7)).values('art_piece_id').annotate(
+def get_most_commented_art_piece_last_7_days() -> Optional[ArtPiece]:
+    query_set = Comment.objects.filter(created_at__range=get_last_days_range(7)).values('art_piece_id').annotate(
         art_piece_count=Count('art_piece_id')
-    ).order_by('-art_piece_count')[0]['art_piece_id']
+    ).order_by('-art_piece_count')
+
+    if query_set.count():
+        art_piece_id = query_set.first()['art_piece_id']
+    else:
+        return None
     return ArtPiece.objects.get(pk=art_piece_id)
 
 
-def get_most_liked_art_piece_last_7_days() -> ArtPiece:
-    art_piece_id = ArtPiece.objects.values('id').annotate(
+def get_most_liked_art_piece_last_7_days() -> Optional[ArtPiece]:
+    query_set = ArtPiece.objects.values('id').annotate(
         count_likes=Count('liked_users')
-    ).order_by('-count_likes')[0]['id']
+    ).order_by('-count_likes')
+
+    if query_set.count():
+        art_piece_id = query_set.first()['id']
+    else:
+        return None
+
     return ArtPiece.objects.get(pk=art_piece_id)
 
 
-def get_most_commented_user_last_7_days() -> AppUser:
-    user_id = Comment.objects.filter(created_at__range=get_last_days_range(7)).values('art_piece__owner').annotate(
+def get_most_commented_user_last_7_days() -> Optional[AppUser]:
+    query_set = Comment.objects.filter(created_at__range=get_last_days_range(7)).values('art_piece__owner').annotate(
         user_count=Count('art_piece__owner')
-    ).order_by('-user_count')[0]['art_piece__owner']
+    ).order_by('-user_count')
+
+    if query_set.count():
+        user_id = query_set.first()['art_piece__owner']
+    else:
+        return None
     return AppUser.objects.get(pk=user_id)
 
 
