@@ -82,8 +82,3 @@ class CommentTests(TestCase):
         url = reverse("comment:all-comments", args=(self.art_piece1.id,))
         response = self.client.get(url)
         self.assertEqual(response.data[0]['writer']['id'], self.user.id)
-
-    def test_all_comments_art_piece_not_found(self):
-        url = reverse("comment:all-comments", args=(50000,))
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 404)
