@@ -7,7 +7,7 @@ from authentication.models import AppUser
 from authentication.serializers import UserSerializer
 from chat.coder_service import get_users_from_code
 from chat.models import Chat, Message, MessageTypeChoices
-from core.utils import get_image_full_path_by_image
+from core.services import get_image_full_path_by_image
 
 
 class ChatSerializer(serializers.ModelSerializer):

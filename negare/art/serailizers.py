@@ -3,11 +3,11 @@ from rest_framework import serializers
 
 from authentication.serializers import UserSerializer
 from category.serializers import CategorySerializer
-from core.utils import get_image_full_path_by_image
 from .models import ArtPiece, ArtTypeChoice
 from core.serializers import ImageSerializer
 
 from authentication.models import AppUser
+from .services import get_art_piece_menu_dict
 
 
 class ArtPieceCompactSerializer(serializers.ModelSerializer):
@@ -123,14 +123,7 @@ class GallerySerializer(serializers.ModelSerializer):
             price_query = Q(price=0)
 
         for post in owner.art_pieces.filter(price_query).order_by('-created_at'):
-            list_posts.append({
-                "id": post.id,
-                "title": post.title,
-                "type": post.type,
-                "image": get_image_full_path_by_image(post.cover, self.context['request']) if post.cover else '',
-                "count_like": post.liked_users.count(),
-                "price": post.price
-            })
+            list_posts.append(get_art_piece_menu_dict(post, self.context))
         return list_posts
 
     class Meta:
