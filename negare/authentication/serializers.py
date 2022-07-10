@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from authentication.models import AppUser
-from core.utils import get_image_full_path_by_image
+from core.services import get_image_full_path_by_image
 
 
 class RegisterSerializer(serializers.Serializer):

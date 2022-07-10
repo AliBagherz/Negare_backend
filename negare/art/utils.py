@@ -83,4 +83,3 @@ def get_artists_in_search(query: str):
     ).filter(
         full_name__icontains=query
     )[:10]
-
