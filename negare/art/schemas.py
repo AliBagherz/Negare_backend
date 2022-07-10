@@ -26,7 +26,8 @@ def menu_art_piece_schema():
             "image": Schema(type=openapi.TYPE_STRING),
             "count_like": Schema(type=openapi.TYPE_INTEGER),
             "count_comment": Schema(type=openapi.TYPE_INTEGER),
-            "price": Schema(type=openapi.TYPE_INTEGER, default=0)
+            "price": Schema(type=openapi.TYPE_INTEGER, default=0),
+            "description": Schema(type=openapi.TYPE_STRING)
         }
     )
 
