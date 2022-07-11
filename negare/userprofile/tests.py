@@ -49,3 +49,16 @@ class ProfileTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "follow")
         self.assertIn(self.user.user_profile, self.other_user.user_profile.followers.all())
+
+    def test_add_profile_image(self):
+        url = reverse("userprofile:add-profile-image")
+        body = {"profile_image_id": self.image.id}
+        response = self.client.post(url, body)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.user.user_profile.avatar.id, self.image.id)
+
+    def test_toggle_business(self):
+        url = reverse("userprofile:toggle-business")
+        response = self.client.put(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.user.user_profile.is_business, True)
