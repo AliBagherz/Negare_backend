@@ -21,9 +21,9 @@ def home_page_schema():
             'likes_you_given_last_30_days': Schema(type=openapi.TYPE_INTEGER),
         }),
         "offers": Schema(type=openapi.TYPE_OBJECT, properties={
-            'most_commented_post_in_last_7_days': menu_art_piece_schema(),
-            'most_liked_post_in_last_7_days': menu_art_piece_schema(),
-            'most_favorite_user_in_last_7_days': user_schema()
+            'most_commented_art_piece_last_7_days': menu_art_piece_schema(),
+            'most_liked_art_piece_last_7_days': menu_art_piece_schema(),
+            'most_commented_user_last_7_days': user_schema()
         }),
         "feed": Schema(type=openapi.TYPE_ARRAY, items=menu_art_piece_schema())
     })
