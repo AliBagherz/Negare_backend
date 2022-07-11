@@ -22,3 +22,21 @@ class CoreTests(TestCase):
         self.client.force_authenticate(self.user)
 
         self.image = Image.objects.create(image=ImageFile(open("./test_images/test.png", "rb")))
+
+    def test_homepage_successfully(self):
+        url = reverse("home-page")
+        data = {"page":1, "page_count":10}
+        response = self.client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
+    def test_homepage_not_found_page(self):
+        url = reverse("home-page")
+        data = {"page":11, "page_count":10}
+        response = self.client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 404)
+
+    def test_homepage_not_found_page_error(self):
+        url = reverse("home-page")
+        data = {"page":11, "page_count":10}
+        response = self.client.get(url, data, format="json")
+        self.assertEqual(response.data['detail'].title(), "Invalid Page.")
