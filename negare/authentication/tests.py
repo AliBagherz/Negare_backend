@@ -100,3 +100,22 @@ class AuthenticationTests(TestCase):
         data = {"email": "negare_test_user@mail.com", "password": None}
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 400)
+
+    def test_get_otp_code(self):
+        url = reverse("authentication:send-otp-code", args=(self.user1.id,))
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_verify_otp_code(self):
+        url = reverse("authentication:verify-otp-code", args=(self.user1.id,))
+        data = {"otp_code": 34673}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "valid")
+
+    def test_get_user_id(self):
+        url = reverse("authentication:get-user-id")
+        self.client.force_authenticate(self.user1)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.user1.id)
