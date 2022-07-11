@@ -5,10 +5,10 @@ from rest_framework.test import APIClient
 
 from authentication.models import AppUser
 from core.models import Image
-from userprofile.models import UserProfile, GENDER_CHOICES
+from userprofile.models import UserProfile
 
 
-class ArtTests(TestCase):
+class ProfileTest(TestCase):
 
     def setUp(self):
         self.client = APIClient()
@@ -45,7 +45,7 @@ class ArtTests(TestCase):
 
     def test_follow_user(self):
         url = reverse("userprofile:follow-user", args=(self.other_user.id,))
-        response = self.client.put(url, format="json")
+        response = self.client.put(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "follow")
-        self.assertContains(self.other_user.user_profile.followers.all(), self.user)
+        self.assertIn(self.user.user_profile, self.other_user.user_profile.followers.all())
