@@ -17,11 +17,16 @@ class ArtTests(TestCase):
         self.client = APIClient()
 
         # create user
-        self.user = AppUser.objects.create_user(username='test_user', password='12345678')
+        self.user = AppUser.objects.create_user(email='mail@mail.ir', username='test_user', password='12345678')
         self.user.is_active = True
         self.user.save()
         UserProfile.objects.create(user=self.user)
         self.client.force_authenticate(self.user)
+
+        self.other_user = AppUser.objects.create_user(email='mail2@mail.ir', username='test_user_2', password='12345678')
+        self.other_user.is_active = True
+        self.other_user.save()
+        UserProfile.objects.create(user=self.other_user)
 
         self.image = Image.objects.create(image=ImageFile(open("./test_images/test.png", "rb")))
 
@@ -100,3 +105,42 @@ class ArtTests(TestCase):
         url = reverse("art:like-art-piece", args=(art_piece.id,))
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_explore_get_result(self):
+        art_piece = ArtPiece.objects.create(
+            cover_id=self.image.id,
+            type="V",
+            owner_id=self.other_user.id,
+            title="art_piece_title"
+        )
+        art_piece.liked_users.add(self.user)
+        art_piece.save()
+        url = reverse("art:explore")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertContains(response, "art_piece_title")
+        
+    def test_search_art_piece(self):
+        ArtPiece.objects.create(
+            cover_id=self.image.id,
+            type="V",
+            owner_id=self.other_user.id,
+            title="art_piece_title"
+        )
+        url = reverse("art:search")
+        params = {"query": "art_piece_title"}
+        response = self.client.get(url, params)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertContains(response, "art_piece_title")
+
+    def test_gallery_view(self):
+        ArtPiece.objects.create(
+            cover_id=self.image.id,
+            type="V",
+            owner_id=self.other_user.id,
+            title="art_piece_title"
+        )
+        url = reverse("art:gallery", args=(self.other_user.id,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertContains(response, "art_piece_title")
