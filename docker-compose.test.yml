@@ -23,6 +23,11 @@ services:
       - db
     environment:
       - PYTHONUNBUFFERED=1
+  redis:
+    image: m.docker-registry.ir/redis:latest
+    command: redis-server
+    ports:
+      - "16379:6379"
 
 volumes:
   postgres_data:
