@@ -30,13 +30,13 @@ class ChatTests(TestCase):
         self.user2.save()
 
         # create chat
-        users = []
-        users.append(self.user1)
-        users.append(self.user2)
-        self.chat = Chat.objects.create(chat_code='ABCD', users=users)
+        self.chat = Chat.objects.create(chat_code=str(self.user1.id)+'-'+str(self.user2.id))
+        self.chat.users.add(self.user1)
+        self.chat.users.add(self.user2)
+        self.chat.save()
 
         # create message
-        self.message = Message.objects.create()
+        self.message = Message.objects.create(chat_id=self.chat.id, text="salam")
         #
 
         UserProfile.objects.create(user=self.user1)
@@ -81,7 +81,3 @@ class ChatTests(TestCase):
         data = {"chat_code": "QWERTY"}
         response = self.client.get(url, data, format="json")
         self.assertEqual(response.data['detail'].title(), "Not Found.")
-
-    def test_all_chat_message_access_denied(self):
-        return True
-
