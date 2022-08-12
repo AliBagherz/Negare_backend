@@ -2,7 +2,7 @@ This is a <b>Django</b> project for the <b>Software Engineering</b> course in Ir
 
 In group of three we work near 5 months on this project.
 
-Negare is a <b>mobile social media App for atists which they can sell their products</b> in it.
+Negare is a <b>mobile social media App for atists which they can sell their products</b> on it.
 
 this is the backend public repository you can also find the client (flutter) repository in below link.
 
