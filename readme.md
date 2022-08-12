@@ -1,17 +1,4 @@
-to run minio server you can use 'docker-compose up' or directly run below command
-
-./minio server ./data --address 'localhost:9006' --console-address "localhost:9005"
-
-
-to reset docker database run these commands:
-docker-compose up -d db
-docker-compose exec db bash
-psql -U postgres
-DROP DATABASE "negare-database";
-CREATE DATABASE "negare-database";
-
-to create superuser in docker:
-docker-compose up -d web
-docker-compose exec web bash
-cd negare
-python manage.py createsuperuser
+This is a django project for the sftware engineering course in Iran University of Science and Technology
+In group of three we work near 5 months on this project.
+Negare is a mobile social media App for atists which they can sell their products in it.
+this is the backend public repository you can also find the client (flutter) repository in below link.
